@@ -1,4 +1,4 @@
-# Equipment Tracking Platform — 0.8.0-alpha.1
+# Equipment Tracking Platform — 0.9.4-alpha.1
 
 A Windows desktop application for creating, signing, searching, updating, recovering, printing, closing, and archiving DD Form 1297 equipment records.
 
@@ -11,7 +11,11 @@ The application targets C# / .NET 10 / WPF, stores operational data in local SQL
 - `EquipmentTrackingPlatform-<version>-win-x64.msi` — the preferred managed-workstation package. It installs the conventional multi-file payload under `Program Files\58 SOW\Equipment Tracking Platform`, creates shortcuts, and supports Windows Installer major upgrades. Installation or upgrade requires an authorized administrator or software-distribution system.
 - `EquipmentTrackingPlatform-<version>-win-x64.exe` — one portable, self-contained executable for a standard-user field test when installation is unavailable. Put it in an approved user-writable application folder and replace it only while the application is closed.
 
-The two packages use the same per-user data locations. Updating or uninstalling the application does not remove the SQLite database, settings, completed PDFs, or backups. There is deliberately no in-app Internet update check: distribute a newer signed MSI or EXE through the approved offline process and verify its SHA-256 hash before use. Every MSI release must increment one of the first three numeric version fields; for example, move from `0.8.0-alpha.1` to `0.8.1-alpha.1`, not only to `0.8.0-alpha.2`.
+The two packages use the same per-user data locations. Updating or uninstalling the application does not remove the SQLite database, settings, completed PDFs, or backups. Settings now provides **Install update package…** for a newer offline MSI. It checks the product and stable UpgradeCode, refuses same/older versions, verifies the MSI hash and size against a companion `release-manifest.json` when available, creates a verified pre-update database/settings backup, starts Windows Installer with administrator approval, and closes the app. It never checks the Internet. An older installed build without this command uses the normal authorized MSI path once to reach 0.9. Every MSI release must increment one of the first three numeric version fields; for example, move from `0.9.3-alpha.1` to `0.9.4-alpha.1`, not only to `0.9.3-alpha.2`.
+
+The current verified release is `0.9.4-alpha.1` with MSI product version `0.9.4` and SQLite schema 6. It adds signed subset-pickup receipts under one parent 1297 and exact offline recognition for the reported HP `18S` scan. The canonical release gate passed all 145 tests (0 failed, 0 skipped), validation, dependency audits, offline review, both publish modes, and MSI creation. Versioned unsigned-pilot EXE/MSI files and the manifest/checksums are under `artifacts/release`; see `VALIDATION.md` for verification evidence. This task did not install the MSI or exercise a physical scanner or CAC signing session.
+
+The prior verified release was `0.9.3-alpha.1`. Its canonical gate passed in 54.9 seconds with 112 tests, 0 failed, and 0 skipped, plus validation, dependency audits, fail-closed offline review, both publish modes, and MSI creation. Its historical hashes and sizes remain recorded in `VALIDATION.md`. All unsigned-pilot artifacts remain restricted to synthetic-data testing unless the responsible organization explicitly approves a different use.
 
 See `DEPLOYMENT.md` and `FIELD-TEST-CHECKLIST.md` before moving the pilot to another computer.
 
@@ -21,7 +25,7 @@ Scheduled backups are enabled by default and use local workstation time:
 
 | When | Backup | Contents |
 |---|---|---|
-| Monday 09:00 | Full | Consistent SQLite snapshot, settings, and every PDF below the configured Completed PDF folder, including preserved originals and archived 1297s |
+| Monday 09:00 | Full | Consistent SQLite snapshot, settings, and every PDF below the configured Completed PDF folder, including preserved originals, signed pickup receipts, and archived 1297s |
 | Monday–Friday 16:00 | Differential | A complete consistent SQLite snapshot, PDFs that are new or changed since the current Monday full, and deletion markers for PDFs moved/deleted since that full |
 
 The scheduler runs inside the application. The application must be open at 09:00 or 16:00 for an on-time run. If the application or computer is off, it creates the latest missed backup when the application next opens. It retries a failed run every 15 minutes while open.
@@ -40,11 +44,20 @@ Changing the backup destination or Completed PDF root invalidates the current di
 
 ## Core workflow and safeguards
 
+- The rank/name entered in New Intake is the authoritative customer identity for the `ISSUED TO` name row, saved transaction, Dashboard, exports, and customer-derived filename. The `ISSUED TO` PDF signer is retained separately as signature/certificate evidence and never replaces those entered fields.
+- Every created 1297 uses its unique `TX-YYYYMMDD-HHMMSS-XXXXXXXX` ID. The ID and an `ETP1297:` QR payload are printed on the filled form. While Dashboard is open, typing or scanning from non-text, non-choice Dashboard/window focus starts a fresh record search, moves input to the search box, and resolves a complete active or archived record code without requiring a preliminary click or Enter. Input already focused in the search box continues to edit there natively; other text-entry and ComboBox controls also retain their native input behavior.
+- Device scan rows detect scanner-speed input and submit after a short idle interval. Enter remains available for deliberate manual entry.
+- ISO/IEC 15434 parsing accepts common control-token substitutions, missing header characters, manufacturer prefixes, 17V/18S, serial-before-part layouts, and the field scanner samples covered by tests. The exact raw scan remains in SQLite. The exact `18S` identity with CAGE `7ESQ7` and serial `2MQ5390WTS` resolves offline to part `A4TH1AV` and model `HP EliteBook 645`; neither the CAGE nor serial alone is treated as a match.
+- Part numbers and common model names are stored separately. Operators can type multiword common model names with spaces; surrounding whitespace is normalized when the row is added or updated. Exact operator catalog mappings take precedence over the built-in name. Prior exact-serial history is reused only when its known part is unambiguous, its nonblank model names do not conflict, and any available CAGE evidence does not conflict. A missing friendly model can still come from the operator catalog or exact built-in part map; otherwise the normal editable field/prompt remains. Unknown part numbers are not guessed and remain searchable by either value.
+- From an active Dashboard record, a partial pickup can select one or more exact devices by scan or checkbox, or select all devices already marked Ready for pickup. The app prepares a separate copy from the preserved original signed intake, crosses out only the selected device lines, fills `RETURN DATE`, and requires the customer's exact `Pickup Signature` before marking any selected device Returned.
+- Each verified subset pickup is retained as a child document of the original parent 1297 with its device links and signer metadata. The parent stays active while devices remain; the final verified pickup archives that one parent with all of its pickup documents. The Dashboard Documents action exposes the original, current/final, and signed pickup copies. Existing full closeout and ordinary device-status editing remain available.
+- Settings can install a newer approved local MSI after identity/version/manifest checks and a verified pre-update backup. There is no network updater.
 - Active-CAC discovery is bound to readers that currently contain a card; cached personal-store certificates are not listed.
-- Intake and closeout use durable recovery journals and can resume after interruption.
+- Intake, closeout, and partial pickup use durable recovery journals and can resume after interruption. An incomplete pickup can be abandoned safely; a receipt already committed to SQLite cannot be rolled back, and a changed attempt is preserved as evidence.
 - Official PDF copies use temporary files, flush/close, SHA-256 verification, and atomic placement.
-- Original signed intake, working/status, final signed closeout, and archived versions remain preserved as applicable.
+- Original signed intake, working/status, each signed pickup receipt, final signed closeout, and archived versions remain preserved as applicable.
 - Dashboard printing creates a temporary one-page Letter sheet containing two readable copies without replacing the tracked PDF.
+- TextBox padding is applied once so the caret and typed text use the declared content inset. Dashboard pie slices gain a visible hover outline and a category/count/percentage tooltip; the chart exposes its automation name/help text through a peer, uses weak collection notifications so discarded visuals are not retained after navigation/refresh, and keeps the persistent labeled legend as the accessible non-hover equivalent.
 - One application instance runs per signed-in Windows user.
 - Startup readiness checks cover storage, SQLite, the approved template, PDF application, smart-card readers, backup destination, and free space.
 - Sanitized support packages exclude the operational database and PDFs by default.
@@ -82,6 +95,8 @@ Create the signed portable EXE, machine-wide MSI, checksums, and release manifes
 ```
 
 The script signs the application-owned payload before the MSI is built, signs the completed MSI, and verifies the signatures. An explicitly approved synthetic-data lab can use `-AllowUnsignedPilotBuild`; its EXE and MSI file names are marked `UNSIGNED-PILOT` and must not be used with operational records. Never commit a PFX, password, private key, or signing token.
+
+Run only one release build at a time and close active Visual Studio/debug build sessions first. The release script stops persistent .NET build servers before deleting WPF `bin`/`obj` state and disables server reuse for every release compilation, so consecutive runs regenerate `App.g.cs`, view `.g.cs`, BAML, and related markup caches instead of referencing files removed by the prior cleanup.
 
 The installer project pins WiX Toolset SDK 6.0.2. Confirm the owning organization accepts the applicable Open Source Maintenance Fee terms before building/distributing the MSI; do not upgrade to a new WiX major version without dependency, support, and license review.
 

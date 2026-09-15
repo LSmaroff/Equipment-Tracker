@@ -1,0 +1,66 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "restore",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "restore",
+        "${workspaceFolder}/EquipmentTrackingPlatform.sln",
+        "--configfile",
+        "${workspaceFolder}/NuGet.Config",
+        "--interactive"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/EquipmentTrackingPlatform.sln",
+        "--configuration",
+        "Debug",
+        "--no-restore"
+      ],
+      "dependsOn": "restore",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "${workspaceFolder}/EquipmentTrackingPlatform.sln",
+        "--configuration",
+        "Debug",
+        "--no-build",
+        "--no-restore"
+      ],
+      "dependsOn": "build",
+      "group": "test",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish win-x64",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/publish.ps1"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

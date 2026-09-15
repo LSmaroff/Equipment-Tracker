@@ -1,0 +1,46 @@
+<Window x:Class="EquipmentTracking.App.Views.TransactionDocumentsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:automation="clr-namespace:System.Windows.Automation;assembly=PresentationCore"
+        Title="1297 documents" Width="1040" Height="650" MinWidth="860" MinHeight="470"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Style="{StaticResource DialogWindowStyle}">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBlock Text="1297 documents" Style="{StaticResource PageTitleStyle}" />
+            <TextBlock Style="{StaticResource PageSubtitleStyle}">
+                <Run Text="Ticket " /><Run Text="{Binding Transaction.TicketNumber, Mode=OneWay}" />
+                <Run Text=" · " /><Run Text="{Binding Transaction.Customer.DisplayName, Mode=OneWay}" />
+            </TextBlock>
+        </StackPanel>
+        <Border Grid.Row="1" Style="{StaticResource InfoCalloutStyle}" Margin="0,16,0,14">
+            <TextBlock Text="{Binding Summary}" Style="{StaticResource SupportingTextStyle}" />
+        </Border>
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Documents}" SelectedItem="{Binding SelectedDocument}"
+                  SelectionMode="Single" IsReadOnly="True" RowHeight="NaN" MinRowHeight="44"
+                  automation:AutomationProperties.Name="Documents under selected 1297">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Document" Binding="{Binding Name}" Width="175" />
+                <DataGridTextColumn Header="Date" Binding="{Binding DisplayDate, Mode=OneWay}" Width="135" />
+                <DataGridTemplateColumn Header="Devices / details" Width="*" MinWidth="240">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate><TextBlock Text="{Binding Details}" TextWrapping="Wrap" /></DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Pickup signer" Binding="{Binding Signer}" Width="155" />
+                <DataGridTextColumn Header="File" Binding="{Binding Availability, Mode=OneWay}" Width="100" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+            <Button Content="Close" IsCancel="True" Style="{StaticResource TertiaryButtonStyle}" Margin="0,0,10,0" />
+            <Button Content="Open selected document" Command="{Binding OpenSelectedCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}" />
+        </StackPanel>
+    </Grid>
+</Window>

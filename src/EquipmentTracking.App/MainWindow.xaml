@@ -1,0 +1,303 @@
+<Window x:Class="EquipmentTracking.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:automation="clr-namespace:System.Windows.Automation;assembly=PresentationCore"
+        Title="Equipment Tracking Platform"
+        Width="1440"
+        Height="900"
+        MinWidth="1180"
+        MinHeight="700"
+        Icon="Assets/EquipmentTrackingPlatform.ico"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource DialogWindowStyle}"
+        Background="{DynamicResource AppBackgroundBrush}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="268" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="44" />
+        </Grid.RowDefinitions>
+
+        <!-- Stable application navigation -->
+        <Border Grid.Row="0"
+                Grid.Column="0"
+                Background="{DynamicResource NavigationBackgroundBrush}"
+                BorderBrush="{DynamicResource BorderNeutralBrush}"
+                BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Margin="20,22,18,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="44" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Width="40"
+                           Height="40"
+                           Source="Assets/EquipmentTrackingPlatform.png"
+                           Stretch="Uniform"
+                           SnapsToDevicePixels="True"
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           VerticalAlignment="Top"
+                           IsHitTestVisible="False"
+                           automation:AutomationProperties.Name="Equipment Tracking Platform logo" />
+                    <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="Equipment Tracking"
+                                   FontFamily="Segoe UI Variable Display, Segoe UI"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <TextBlock Text="1297 operations"
+                                   Margin="0,2,0,0"
+                                   Style="{StaticResource CaptionTextStyle}" />
+                    </StackPanel>
+                </Grid>
+
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock Text="WORKSPACE"
+                                   Style="{StaticResource EyebrowStyle}"
+                                   Margin="24,2,16,8" />
+
+                        <Button Style="{StaticResource NavigationButtonStyle}"
+                                Tag="{Binding IsDashboardSelected, Mode=OneWay, StringFormat={}{0}}"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="Dashboard"
+                                ToolTip="View active and archived 1297 transactions"
+                                automation:AutomationProperties.Name="Dashboard">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="&#xE80F;" Style="{StaticResource NavigationIconStyle}" />
+                                <TextBlock Grid.Column="1" Text="Dashboard" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+
+                        <Button Style="{StaticResource NavigationButtonStyle}"
+                                Tag="{Binding IsIntakeSelected, Mode=OneWay, StringFormat={}{0}}"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="Intake"
+                                ToolTip="Create and sign a new 1297"
+                                automation:AutomationProperties.Name="New intake">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="&#xE710;" Style="{StaticResource NavigationIconStyle}" />
+                                <TextBlock Grid.Column="1" Text="New intake" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+
+                        <Button Style="{StaticResource NavigationButtonStyle}"
+                                Tag="{Binding IsReturnsSelected, Mode=OneWay, StringFormat={}{0}}"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="Returns"
+                                ToolTip="Search equipment and update device status"
+                                automation:AutomationProperties.Name="Equipment status">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="&#xE9D9;" Style="{StaticResource NavigationIconStyle}" />
+                                <TextBlock Grid.Column="1" Text="Equipment status" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+
+                        <Button Style="{StaticResource NavigationButtonStyle}"
+                                Tag="{Binding IsRecoverySelected, Mode=OneWay, StringFormat={}{0}}"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="Recovery"
+                                ToolTip="Resume or safely roll back interrupted work"
+                                automation:AutomationProperties.Name="Recovery">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="&#xE777;" Style="{StaticResource NavigationIconStyle}" />
+                                <TextBlock Grid.Column="1" Text="Recovery" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+
+                        <Separator Margin="20,14,20,12" />
+                        <TextBlock Text="GUIDANCE"
+                                   Style="{StaticResource EyebrowStyle}"
+                                   Margin="24,0,16,8" />
+
+                        <Button Style="{StaticResource NavigationButtonStyle}"
+                                Tag="{Binding IsHowToUseSelected, Mode=OneWay, StringFormat={}{0}}"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="HowToUse"
+                                ToolTip="Open the local operator guide"
+                                automation:AutomationProperties.Name="How to use">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="&#xE897;" Style="{StaticResource NavigationIconStyle}" />
+                                <TextBlock Grid.Column="1" Text="How to use" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+
+                        <Button Style="{StaticResource NavigationButtonStyle}"
+                                Tag="{Binding IsSettingsSelected, Mode=OneWay, StringFormat={}{0}}"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="Settings"
+                                ToolTip="Configure local files, readiness, and retention"
+                                automation:AutomationProperties.Name="Settings">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="&#xE713;" Style="{StaticResource NavigationIconStyle}" />
+                                <TextBlock Grid.Column="1" Text="Settings" VerticalAlignment="Center" />
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Border Grid.Row="2"
+                        Margin="14,12,14,16"
+                        Padding="14"
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource BorderNeutralBrush}"
+                        BorderThickness="1"
+                        CornerRadius="{StaticResource RadiusLarge}">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,7">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Appearance" Style="{StaticResource FieldLabelStyle}" Margin="0" />
+                            <TextBlock Grid.Column="1"
+                                       Text="&#xE790;"
+                                       FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                       Foreground="{DynamicResource TextMutedBrush}" />
+                        </Grid>
+                        <ComboBox ItemsSource="{Binding AvailableThemes}"
+                                  SelectedItem="{Binding SelectedTheme, UpdateSourceTrigger=PropertyChanged}"
+                                  automation:AutomationProperties.Name="Application theme"
+                                  Margin="0,0,0,10" />
+                        <Button Style="{StaticResource SecondaryButtonStyle}"
+                                Command="{Binding ExportExcelCommand}"
+                                ToolTip="Refresh the configured local Excel workbook"
+                                automation:AutomationProperties.Name="Export Excel">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE74E;" Style="{StaticResource ButtonIconStyle}" />
+                                <TextBlock Text="Export Excel" />
+                            </StackPanel>
+                        </Button>
+                        <TextBlock Margin="2,10,0,0"
+                                   Text="{Binding AppVersion, StringFormat='Version {0}'}"
+                                   Style="{StaticResource CaptionTextStyle}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Application content -->
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="62" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource BorderNeutralBrush}"
+                    BorderThickness="0,0,0,1">
+                <Grid Margin="30,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="1297 workspace"
+                                   Foreground="{DynamicResource TextMutedBrush}"
+                                   FontSize="13" />
+                        <TextBlock Text=" / "
+                                   Foreground="{DynamicResource TextMutedBrush}"
+                                   Margin="5,0" />
+                        <TextBlock Text="{Binding PageTitle}"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                    </StackPanel>
+                    <Border Grid.Column="1"
+                            Style="{StaticResource NeutralPillStyle}"
+                            VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="7"
+                                     Height="7"
+                                     Fill="{DynamicResource SuccessBrush}"
+                                     Margin="0,0,7,0"
+                                     VerticalAlignment="Center" />
+                            <TextBlock Text="Local workspace"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <ContentControl Grid.Row="1"
+                            Content="{Binding CurrentViewModel}"
+                            Margin="{StaticResource PageContentMargin}"
+                            Focusable="False" />
+        </Grid>
+
+        <!-- Global, non-blocking operation status -->
+        <Border Grid.Row="1"
+                Grid.ColumnSpan="2"
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderNeutralBrush}"
+                BorderThickness="0,1,0,0">
+            <Grid Margin="16,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Ellipse Width="8"
+                         Height="8"
+                         Fill="{DynamicResource InfoBrush}"
+                         VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1"
+                           Margin="8,0,8,0"
+                           Text="Status"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           VerticalAlignment="Center" />
+                <TextBlock Grid.Column="2"
+                           Text="{Binding StatusMessage}"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           TextTrimming="CharacterEllipsis"
+                           automation:AutomationProperties.LiveSetting="Polite" />
+                <TextBlock Grid.Column="3"
+                           Text="Offline-capable"
+                           Style="{StaticResource CaptionTextStyle}"
+                           VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,451 @@
+<UserControl x:Class="EquipmentTracking.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:automation="clr-namespace:System.Windows.Automation;assembly=PresentationCore">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="0,0,0,18">
+            <TextBlock Text="Settings" Style="{StaticResource PageTitleStyle}" />
+            <TextBlock Text="Configure local paths, backup and recovery, diagnostics, retention, organization choices, and approved PDF mappings."
+                       Style="{StaticResource PageSubtitleStyle}" />
+        </StackPanel>
+
+        <ProgressBar Grid.Row="1"
+                     Height="3"
+                     Margin="0,0,0,13"
+                     IsIndeterminate="True"
+                     Foreground="{DynamicResource AccentFillBrush}"
+                     Background="{DynamicResource SurfaceTertiaryBrush}"
+                     Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="0,0,8,2">
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="36" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE8B7;"
+                                       FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                       FontSize="17"
+                                       Foreground="{DynamicResource AccentBrush}"
+                                       VerticalAlignment="Top" />
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Files and applications" Style="{StaticResource SectionTitleStyle}" />
+                                <TextBlock Text="Choose the approved template, operational output locations, and PDF application."
+                                           Style="{StaticResource PageSubtitleStyle}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="190" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="1297 template PDF" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0" />
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding TemplatePdfPath, UpdateSourceTrigger=PropertyChanged}"
+                                     automation:AutomationProperties.Name="1297 template PDF path" />
+                            <Button Grid.Column="3"
+                                    Content="Browse…"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding BrowseTemplateCommand}"
+                                    automation:AutomationProperties.Name="Browse for 1297 template PDF" />
+
+                            <TextBlock Grid.Row="2" Text="Completed PDF folder" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0" />
+                            <TextBox Grid.Row="2" Grid.Column="1"
+                                     Text="{Binding CompletedPdfFolder, UpdateSourceTrigger=PropertyChanged}"
+                                     automation:AutomationProperties.Name="Completed PDF folder" />
+                            <Button Grid.Row="2" Grid.Column="3"
+                                    Content="Browse…"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding BrowseCompletedFolderCommand}"
+                                    automation:AutomationProperties.Name="Browse for completed PDF folder" />
+
+                            <TextBlock Grid.Row="4" Text="Excel export path" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0" />
+                            <TextBox Grid.Row="4" Grid.Column="1"
+                                     Text="{Binding ExcelExportPath, UpdateSourceTrigger=PropertyChanged}"
+                                     automation:AutomationProperties.Name="Excel export path" />
+                            <Button Grid.Row="4" Grid.Column="3"
+                                    Content="Browse…"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding BrowseExcelCommand}"
+                                    automation:AutomationProperties.Name="Browse for Excel export path" />
+
+                            <TextBlock Grid.Row="6" Text="Adobe executable" Style="{StaticResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0" />
+                            <TextBox Grid.Row="6"
+                                     Grid.Column="1"
+                                     Text="{Binding AdobeExecutablePath, UpdateSourceTrigger=PropertyChanged}"
+                                     ToolTip="Optional. Leave blank to use the Windows default PDF application."
+                                     automation:AutomationProperties.Name="Optional Adobe executable path" />
+                            <Button Grid.Row="6" Grid.Column="3"
+                                    Content="Browse…"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding BrowseAdobeCommand}"
+                                    automation:AutomationProperties.Name="Browse for Adobe executable" />
+                        </Grid>
+
+                        <Border Style="{StaticResource InsetPanelStyle}" Margin="0,18,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="230" />
+                                    <ColumnDefinition Width="24" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Maximum devices per form" Style="{StaticResource FieldLabelStyle}" />
+                                    <TextBox Text="{Binding MaximumDevicesPerForm, UpdateSourceTrigger=PropertyChanged}"
+                                             automation:AutomationProperties.Name="Maximum devices per form" />
+                                    <TextBlock Text="Allowed range: 1–10" Style="{StaticResource CaptionTextStyle}" Margin="0,5,0,0" />
+                                </StackPanel>
+                                <CheckBox Grid.Column="2"
+                                          Content="Require a readable PDF signature before finalization"
+                                          IsChecked="{Binding RequireSignatureForFinalization}"
+                                          VerticalAlignment="Center"
+                                          automation:AutomationProperties.Name="Require a readable PDF signature before finalization" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="&#xE777;"
+                                   FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                   FontSize="17"
+                                   Foreground="{DynamicResource AccentBrush}"
+                                   VerticalAlignment="Top" />
+                        <StackPanel Grid.Column="1" Margin="0,0,24,0">
+                            <TextBlock Text="Application update" Style="{StaticResource SectionTitleStyle}" />
+                            <TextBlock Text="Select a newer approved MSI from local or removable media. The app checks its product identity and version, verifies the companion release manifest when present, creates a pre-update backup, and then starts Windows Installer. No internet connection is required."
+                                       Style="{StaticResource PageSubtitleStyle}" />
+                        </StackPanel>
+                        <Button Grid.Column="2"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Command="{Binding InstallUpdateCommand}"
+                                VerticalAlignment="Center"
+                                automation:AutomationProperties.Name="Install application update package">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE896;" Style="{StaticResource ButtonIconStyle}" />
+                                <TextBlock Text="Install update package…" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="36" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE896;"
+                                       FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                       FontSize="17"
+                                       Foreground="{DynamicResource AccentBrush}"
+                                       VerticalAlignment="Top" />
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Backup and recovery" Style="{StaticResource SectionTitleStyle}" />
+                                <TextBlock Text="Weekly full backups protect the database, settings, and completed/archived 1297 PDFs. Weekday differentials contain a complete database snapshot plus PDF additions, changes, moves, and deletions since Monday."
+                                           Style="{StaticResource PageSubtitleStyle}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="190" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Scheduled backup folder"
+                                       Style="{StaticResource FieldLabelStyle}"
+                                       VerticalAlignment="Center"
+                                       Margin="0" />
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding ScheduledBackupFolder, UpdateSourceTrigger=PropertyChanged}"
+                                     automation:AutomationProperties.Name="Scheduled backup folder" />
+                            <Button Grid.Column="3"
+                                    Content="Browse…"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding BrowseScheduledBackupFolderCommand}"
+                                    automation:AutomationProperties.Name="Browse for scheduled backup folder" />
+                        </Grid>
+
+                        <Border Style="{StaticResource InsetPanelStyle}" Margin="0,0,0,14">
+                            <StackPanel>
+                                <CheckBox Content="Enable scheduled backups"
+                                          IsChecked="{Binding ScheduledBackupsEnabled}"
+                                          automation:AutomationProperties.Name="Enable scheduled backups" />
+                                <TextBlock Text="{Binding BackupScheduleDescription}"
+                                           Style="{StaticResource SupportingTextStyle}"
+                                           Margin="0,8,0,0" />
+                                <TextBlock Text="{Binding BackupStatusSummary}"
+                                           Style="{StaticResource CaptionTextStyle}"
+                                           Margin="0,5,0,0" />
+                                <TextBlock Text="If the app or computer is off at a scheduled time, the latest missed backup is created when the app next opens."
+                                           Style="{StaticResource CaptionTextStyle}"
+                                           Margin="0,5,0,0" />
+                                <TextBlock Text="Save settings after changing the destination, enablement, or retention value."
+                                           Style="{StaticResource CaptionTextStyle}"
+                                           Margin="0,5,0,0" />
+                            </StackPanel>
+                        </Border>
+
+                        <WrapPanel>
+                            <Button Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding CreateBackupCommand}"
+                                    Margin="0,0,10,10"
+                                    automation:AutomationProperties.Name="Create full backup now">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE74E;" Style="{StaticResource ButtonIconStyle}" />
+                                    <TextBlock Text="Create full backup now" />
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding RestoreBackupCommand}"
+                                    Margin="0,0,10,10"
+                                    automation:AutomationProperties.Name="Restore backup">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE777;" Style="{StaticResource ButtonIconStyle}" />
+                                    <TextBlock Text="Restore backup" />
+                                </StackPanel>
+                            </Button>
+                            <Button Content="Open backup folder"
+                                    Style="{StaticResource TertiaryButtonStyle}"
+                                    Command="{Binding OpenBackupFolderCommand}"
+                                    Margin="0,0,10,10" />
+                        </WrapPanel>
+                        <CheckBox Content="Create an automatic backup before database migrations"
+                                  IsChecked="{Binding CreateAutomaticPreMigrationBackups}"
+                                  Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="36" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE9D9;"
+                                       FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                       FontSize="17"
+                                       Foreground="{DynamicResource AccentBrush}"
+                                       VerticalAlignment="Top" />
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Diagnostics and readiness" Style="{StaticResource SectionTitleStyle}" />
+                                <TextBlock Text="Run local readiness checks or create a sanitized support package. Operational PDFs and the database are excluded by default."
+                                           Style="{StaticResource PageSubtitleStyle}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <WrapPanel>
+                            <Button Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding RunPreflightCommand}"
+                                    Margin="0,0,10,10"
+                                    automation:AutomationProperties.Name="Run readiness check">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE73E;" Style="{StaticResource ButtonIconStyle}" />
+                                    <TextBlock Text="Run readiness check" />
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding CreateSupportPackageCommand}"
+                                    Margin="0,0,10,10"
+                                    automation:AutomationProperties.Name="Create support package">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE7B8;" Style="{StaticResource ButtonIconStyle}" />
+                                    <TextBlock Text="Create support package" />
+                                </StackPanel>
+                            </Button>
+                            <Button Content="Open diagnostics folder"
+                                    Style="{StaticResource TertiaryButtonStyle}"
+                                    Command="{Binding OpenDiagnosticsFolderCommand}"
+                                    Margin="0,0,10,10" />
+                            <Button Content="Open application data"
+                                    Style="{StaticResource TertiaryButtonStyle}"
+                                    Command="{Binding OpenDataFolderCommand}"
+                                    Margin="0,0,10,10" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Local retention" Style="{StaticResource SectionTitleStyle}" />
+                        <TextBlock Text="These limits apply only to application logs, temporary files, completed recovery journals, and automatic backups. Official completed and archived 1297 records are never removed by maintenance."
+                                   Style="{StaticResource PageSubtitleStyle}"
+                                   Margin="0,0,0,14" />
+                        <UniformGrid Columns="4">
+                            <StackPanel Margin="0,0,14,0">
+                                <TextBlock Text="Log days" Style="{StaticResource FieldLabelStyle}" />
+                                <TextBox Text="{Binding LogRetentionDays, UpdateSourceTrigger=PropertyChanged}"
+                                         automation:AutomationProperties.Name="Log retention days" />
+                            </StackPanel>
+                            <StackPanel Margin="0,0,14,0">
+                                <TextBlock Text="Temporary-file days" Style="{StaticResource FieldLabelStyle}" />
+                                <TextBox Text="{Binding TemporaryFileRetentionDays, UpdateSourceTrigger=PropertyChanged}"
+                                         automation:AutomationProperties.Name="Temporary file retention days" />
+                            </StackPanel>
+                            <StackPanel Margin="0,0,14,0">
+                                <TextBlock Text="Completed-recovery days" Style="{StaticResource FieldLabelStyle}" />
+                                <TextBox Text="{Binding CompletedWorkflowRetentionDays, UpdateSourceTrigger=PropertyChanged}"
+                                         automation:AutomationProperties.Name="Completed recovery retention days" />
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Weekly full backups to keep" Style="{StaticResource FieldLabelStyle}" />
+                                <TextBox Text="{Binding BackupRetentionCount, UpdateSourceTrigger=PropertyChanged}"
+                                         automation:AutomationProperties.Name="Weekly full backups to keep" />
+                            </StackPanel>
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Organization choices" Style="{StaticResource SectionTitleStyle}" />
+                        <TextBlock Text="Enter one organization per line. The same values appear during intake and determine the organization folder used for archived closeouts."
+                                   Style="{StaticResource PageSubtitleStyle}"
+                                   Margin="0,0,0,12" />
+                        <TextBox Text="{Binding OrganizationsText, UpdateSourceTrigger=PropertyChanged}"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto"
+                                 MinHeight="124"
+                                 VerticalContentAlignment="Top"
+                                 automation:AutomationProperties.Name="Organization choices, one per line" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="PDF field mappings" Style="{StaticResource SectionTitleStyle}" />
+                                <TextBlock Text="The approved template contains no PDF JavaScript. The application fills DATE OF ISSUE, RETURN DATE, and QNTY while preserving editable fields and the exact Pickup Signature field."
+                                           Style="{StaticResource PageSubtitleStyle}" />
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding InspectFieldsCommand}"
+                                    VerticalAlignment="Top"
+                                    Margin="20,0,0,0"
+                                    automation:AutomationProperties.Name="Inspect PDF fields">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE890;" Style="{StaticResource ButtonIconStyle}" />
+                                    <TextBlock Text="Inspect PDF fields" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <DataGrid Grid.Row="1"
+                                  Margin="0,18,0,0"
+                                  ItemsSource="{Binding FieldMappings}"
+                                  CanUserAddRows="False"
+                                  MinHeight="330"
+                                  automation:AutomationProperties.Name="PDF field mappings">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Logical field" Binding="{Binding LogicalName}" IsReadOnly="True" Width="*" />
+                                <DataGridTextColumn Header="PDF field name" Binding="{Binding PdfFieldName, UpdateSourceTrigger=PropertyChanged}" Width="2*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource DangerCalloutStyle}" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,20,0">
+                            <TextBlock Text="Pilot/test data reset" Style="{StaticResource SectionTitleStyle}" />
+                            <TextBlock Text="For pilot and test systems only. The operation creates a backup before clearing local transaction records and never deletes completed or archived PDFs."
+                                       Style="{StaticResource SupportingTextStyle}" />
+                            <CheckBox Content="Enable Reset test data for this installation"
+                                      IsChecked="{Binding AllowTestDataReset}"
+                                      Margin="0,12,0,0" />
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Style="{StaticResource DangerButtonStyle}"
+                                Command="{Binding ResetTestDataCommand}"
+                                VerticalAlignment="Bottom"
+                                automation:AutomationProperties.Name="Reset pilot test data">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE74D;" Style="{StaticResource ButtonIconStyle}" />
+                                <TextBlock Text="Reset test data" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- One stable primary action remains visible while the settings page scrolls. -->
+        <Border Grid.Row="3"
+                Margin="0,12,0,0"
+                Padding="14,12"
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderNeutralBrush}"
+                BorderThickness="1"
+                CornerRadius="{StaticResource RadiusLarge}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Path, retention, organization, signature, and PDF mapping changes take effect after saving."
+                           Style="{StaticResource SupportingTextStyle}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,18,0" />
+                <Button Grid.Column="1"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Command="{Binding SaveCommand}"
+                        MinWidth="126"
+                        automation:AutomationProperties.Name="Save settings">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE74E;" Style="{StaticResource ButtonIconStyle}" />
+                        <TextBlock Text="Save settings" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

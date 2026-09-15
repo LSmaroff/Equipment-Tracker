@@ -1,0 +1,264 @@
+<UserControl x:Class="EquipmentTracking.App.Views.ReturnsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:automation="clr-namespace:System.Windows.Automation;assembly=PresentationCore">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel>
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Equipment status" Style="{StaticResource PageTitleStyle}" />
+                    <TextBlock Text="Find a device or ticket, open its 1297, and record current shop status or pickup. Press Enter from search to run it."
+                               Style="{StaticResource PageSubtitleStyle}" />
+                </StackPanel>
+                <Border Grid.Column="1"
+                        Style="{StaticResource NeutralPillStyle}"
+                        VerticalAlignment="Top"
+                        Margin="20,2,0,0">
+                    <TextBlock Text="{Binding Results.Count, StringFormat={}{0} device records}"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                </Border>
+            </Grid>
+
+            <ProgressBar Height="3"
+                         Margin="0,0,0,13"
+                         IsIndeterminate="True"
+                         Foreground="{DynamicResource AccentFillBrush}"
+                         Background="{DynamicResource SurfaceTertiaryBrush}"
+                         Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+            <Border Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="12" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Search equipment records" Style="{StaticResource FieldLabelStyle}" />
+                    <TextBlock Grid.Column="2"
+                               Text="Scan a 1297 code, or search ID, ticket, customer, model, part, serial, asset tag, or status"
+                               Style="{StaticResource CaptionTextStyle}"
+                               VerticalAlignment="Center" />
+
+                    <Grid Grid.Row="1">
+                        <TextBox x:Name="EquipmentSearchBox"
+                                 Padding="34,7,10,7"
+                                 Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                                 TextChanged="EquipmentSearchBox_OnTextChanged"
+                                 PreviewKeyDown="EquipmentSearchBox_OnPreviewKeyDown"
+                                 MaxLength="256"
+                                 ToolTip="Leave blank to show recent records"
+                                 automation:AutomationProperties.Name="Search equipment records" />
+                        <TextBlock Text="&#xE721;"
+                                   FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                   FontSize="14"
+                                   Foreground="{DynamicResource TextMutedBrush}"
+                                   Margin="12,0,0,0"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False" />
+                    </Grid>
+                    <Button Grid.Row="1"
+                            Grid.Column="2"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding SearchCommand}"
+                            MinWidth="102"
+                            automation:AutomationProperties.Name="Search equipment records">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE721;" Style="{StaticResource ButtonIconStyle}" />
+                            <TextBlock Text="Search" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Equipment records" Style="{StaticResource SectionTitleStyle}" />
+                            <TextBlock Text="An accent marker groups devices from the same 1297 as the selection. Double-click a row to open its PDF."
+                                       Style="{StaticResource PageSubtitleStyle}" />
+                        </StackPanel>
+                        <Border Grid.Column="1"
+                                Width="4"
+                                Height="36"
+                                Background="{DynamicResource AccentBrush}"
+                                CornerRadius="2"
+                                ToolTip="Example of the same-transaction marker"
+                                VerticalAlignment="Top"
+                                Margin="16,2,2,0" />
+                    </Grid>
+
+                    <Grid Grid.Row="1" Margin="0,16,0,0" MinHeight="340">
+                        <DataGrid x:Name="EquipmentResultsGrid"
+                                  ItemsSource="{Binding Results}"
+                                  SelectedItem="{Binding SelectedResult}"
+                                  IsReadOnly="True"
+                                  MouseDoubleClick="EquipmentResultsGrid_OnMouseDoubleClick"
+                                  Visibility="{Binding HasResults, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  automation:AutomationProperties.Name="Equipment search results">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow" BasedOn="{StaticResource BaseDataGridRowStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSameTransactionAsSelection}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource SameTransactionBrush}" />
+                                            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                            <Setter Property="BorderThickness" Value="4,0,0,0" />
+                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                        </DataTrigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource SelectionBrush}" />
+                                            <Setter Property="BorderBrush" Value="{DynamicResource FocusBrush}" />
+                                            <Setter Property="BorderThickness" Value="5,0,0,0" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="1297 ID" Binding="{Binding TransactionId}" Width="225" />
+                                <DataGridTextColumn Header="Ticket" Binding="{Binding TicketNumber}" Width="135" />
+                                <DataGridTextColumn Header="Customer" Binding="{Binding CustomerName}" Width="*" MinWidth="150" />
+                                <DataGridTextColumn Header="Model name" Binding="{Binding Model}" Width="*" MinWidth="130" />
+                                <DataGridTextColumn Header="Part number" Binding="{Binding PartNumber}" Width="*" MinWidth="130" />
+                                <DataGridTextColumn Header="Serial number" Binding="{Binding SerialNumber}" Width="*" MinWidth="130" />
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="145" />
+                                <DataGridTextColumn Header="Issued" Binding="{Binding IssuedAt, StringFormat={}{0:MMM d, yyyy}}" Width="112" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Border Style="{StaticResource EmptyStatePanelStyle}"
+                                Visibility="{Binding HasNoResults, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel HorizontalAlignment="Center" MaxWidth="500">
+                                <TextBlock Text="&#xE721;"
+                                           FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                           FontSize="24"
+                                           Foreground="{DynamicResource TextMutedBrush}"
+                                           HorizontalAlignment="Center" />
+                                <TextBlock Text="No equipment records found"
+                                           Style="{StaticResource CardTitleStyle}"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,10,0,5" />
+                                <TextBlock Text="{Binding EmptyResultsMessage}"
+                                           Style="{StaticResource SupportingTextStyle}"
+                                           TextAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Update selected device" Style="{StaticResource SectionTitleStyle}" />
+                            <TextBlock Text="{Binding SelectedResultSummary}"
+                                       Style="{StaticResource PageSubtitleStyle}" />
+                        </StackPanel>
+                        <Border Grid.Column="1"
+                                Style="{StaticResource StatusPillStyle}"
+                                VerticalAlignment="Top"
+                                Visibility="{Binding HasSelection, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="Selected"
+                                       Foreground="{DynamicResource InfoBrush}"
+                                       FontSize="12"
+                                       FontWeight="SemiBold" />
+                        </Border>
+                    </Grid>
+
+                    <Grid Margin="0,16,0,0" IsEnabled="{Binding HasSelection}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.2*" />
+                            <ColumnDefinition Width="14" />
+                            <ColumnDefinition Width="1.05*" />
+                            <ColumnDefinition Width="14" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Technician name and grade" Style="{StaticResource FieldLabelStyle}" />
+                            <ComboBox ItemsSource="{Binding TechnicianSuggestions}"
+                                      Text="{Binding Technician, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEditable="True"
+                                      IsTextSearchEnabled="True"
+                                      StaysOpenOnEdit="True"
+                                      automation:AutomationProperties.Name="Technician name and grade" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="New status" Style="{StaticResource FieldLabelStyle}" />
+                            <ComboBox ItemsSource="{Binding StatusOptions}"
+                                      SelectedItem="{Binding SelectedStatus, UpdateSourceTrigger=PropertyChanged}"
+                                      automation:AutomationProperties.Name="New equipment status" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Notes (optional)" Style="{StaticResource FieldLabelStyle}" />
+                            <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxLength="1000"
+                                     automation:AutomationProperties.Name="Optional status notes" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Use Update devices in 1297 when several devices changed or when marking equipment picked up."
+                                   Style="{StaticResource CaptionTextStyle}"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,16,0" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Style="{StaticResource TertiaryButtonStyle}"
+                                    Command="{Binding OpenPdfCommand}"
+                                    Margin="0,0,8,0"
+                                    automation:AutomationProperties.Name="Open selected PDF">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE8A5;" Style="{StaticResource ButtonIconStyle}" />
+                                    <TextBlock Text="Open PDF" />
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding UpdateTransactionDevicesCommand}"
+                                    Margin="0,0,10,0"
+                                    automation:AutomationProperties.Name="Update devices in this 1297">
+                                <TextBlock Text="Update devices in 1297" />
+                            </Button>
+                            <Button Style="{StaticResource PrimaryButtonStyle}"
+                                    Command="{Binding UpdateStatusCommand}"
+                                    automation:AutomationProperties.Name="Save selected device status">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE74E;" Style="{StaticResource ButtonIconStyle}" />
+                                    <TextBlock Text="Save status" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

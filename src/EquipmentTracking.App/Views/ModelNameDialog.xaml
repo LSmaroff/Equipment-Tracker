@@ -1,0 +1,54 @@
+<Window x:Class="EquipmentTracking.App.Views.ModelNameDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:automation="clr-namespace:System.Windows.Automation;assembly=PresentationCore"
+        Title="Common model name"
+        Width="500"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Style="{StaticResource DialogWindowStyle}">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Name this equipment model"
+                   Style="{StaticResource SectionTitleStyle}" />
+        <TextBlock Grid.Row="1"
+                   Margin="0,7,0,16"
+                   TextWrapping="Wrap"
+                   Style="{StaticResource SupportingTextStyle}">
+            <Run Text="Part number: " FontWeight="SemiBold" />
+            <Run x:Name="PartNumberRun" />
+            <LineBreak />
+            <Run Text="Enter the common name technicians should see for this part number. It will be reused automatically on future scans." />
+        </TextBlock>
+
+        <StackPanel Grid.Row="2">
+            <TextBlock Text="Common model name" Style="{StaticResource FieldLabelStyle}" />
+            <TextBox x:Name="ModelNameBox"
+                     MaxLength="128"
+                     MinWidth="420"
+                     KeyDown="ModelNameBox_OnKeyDown"
+                     automation:AutomationProperties.Name="Common model name" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,20,0,0">
+            <Button Content="Skip for now"
+                    Style="{StaticResource TertiaryButtonStyle}"
+                    Click="Skip_OnClick"
+                    Margin="0,0,10,0" />
+            <Button Content="Save model name"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Click="Save_OnClick" />
+        </StackPanel>
+    </Grid>
+</Window>

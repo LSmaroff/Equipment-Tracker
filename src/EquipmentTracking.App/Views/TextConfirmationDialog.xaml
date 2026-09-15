@@ -1,0 +1,77 @@
+<Window x:Class="EquipmentTracking.App.Views.TextConfirmationDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Confirm destructive action"
+        Width="640"
+        Height="390"
+        MinWidth="520"
+        MinHeight="340"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterOwner"
+        Style="{StaticResource DialogWindowStyle}">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="44" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Width="36" Height="36" CornerRadius="8" Background="{DynamicResource DangerSurfaceBrush}" VerticalAlignment="Top">
+                <TextBlock Text="&#xE7BA;"
+                           FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                           Foreground="{DynamicResource DangerBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+            </Border>
+            <TextBlock x:Name="HeadingText"
+                       Grid.Column="1"
+                       Style="{StaticResource SectionTitleStyle}"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center" />
+        </Grid>
+
+        <Border Grid.Row="1" Style="{StaticResource DangerCalloutStyle}" Margin="0,14,0,16">
+            <TextBlock x:Name="WarningText" Style="{StaticResource SupportingTextStyle}" />
+        </Border>
+
+        <TextBlock x:Name="InstructionText"
+                   Grid.Row="2"
+                   FontWeight="SemiBold"
+                   TextWrapping="Wrap" />
+
+        <TextBox x:Name="ConfirmationText"
+                 Grid.Row="3"
+                 Margin="0,10,0,0"
+                 VerticalAlignment="Top"
+                 TextChanged="ConfirmationText_OnTextChanged" />
+
+        <Grid Grid.Row="4" Margin="0,18,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="The confirm action remains disabled until the phrase matches exactly."
+                       Style="{StaticResource CaptionTextStyle}"
+                       VerticalAlignment="Center" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel"
+                        Style="{StaticResource TertiaryButtonStyle}"
+                        IsCancel="True"
+                        Margin="0,0,10,0" />
+                <Button x:Name="ConfirmButton"
+                        Content="Confirm reset"
+                        Style="{StaticResource DangerButtonStyle}"
+                        IsDefault="True"
+                        IsEnabled="False"
+                        Click="ConfirmButton_OnClick" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

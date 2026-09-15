@@ -1,0 +1,639 @@
+<UserControl x:Class="EquipmentTracking.App.Views.IntakeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:automation="clr-namespace:System.Windows.Automation;assembly=PresentationCore">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel>
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="New equipment intake" Style="{StaticResource PageTitleStyle}" />
+                    <TextBlock Text="Create one 1297, capture every device, verify the customer and ticket details, then complete signatures in Adobe."
+                               Style="{StaticResource PageSubtitleStyle}" />
+                </StackPanel>
+                <Border Grid.Column="1"
+                        Style="{StaticResource NeutralPillStyle}"
+                        Margin="20,2,0,0"
+                        VerticalAlignment="Top">
+                    <TextBlock Text="{Binding WorkflowStageSummary}"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                </Border>
+            </Grid>
+
+            <ProgressBar Height="3"
+                         Margin="0,0,0,13"
+                         IsIndeterminate="True"
+                         Foreground="{DynamicResource AccentFillBrush}"
+                         Background="{DynamicResource SurfaceTertiaryBrush}"
+                         Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+            <!-- Stable workflow map preserves context during long scanner and Adobe steps. -->
+            <Border Style="{StaticResource CardStyle}" Padding="18">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="32" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="32" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="32" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border>
+                            <Border.Style>
+                                <Style TargetType="Border" BasedOn="{StaticResource StepNumberStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsCreateStage}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
+                                            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="1" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Create" Style="{StaticResource CardTitleStyle}" />
+                            <TextBlock Text="Working PDF" Style="{StaticResource CaptionTextStyle}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Grid.Column="1" Height="1" Background="{DynamicResource BorderNeutralBrush}" VerticalAlignment="Center" />
+
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border>
+                            <Border.Style>
+                                <Style TargetType="Border" BasedOn="{StaticResource StepNumberStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsDeviceStage}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
+                                            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="2" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Devices" Style="{StaticResource CardTitleStyle}" />
+                            <TextBlock Text="Scan or type" Style="{StaticResource CaptionTextStyle}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Grid.Column="3" Height="1" Background="{DynamicResource BorderNeutralBrush}" VerticalAlignment="Center" />
+
+                    <Grid Grid.Column="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border>
+                            <Border.Style>
+                                <Style TargetType="Border" BasedOn="{StaticResource StepNumberStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsDetailsStage}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
+                                            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="3" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Details" Style="{StaticResource CardTitleStyle}" />
+                            <TextBlock Text="Customer and ticket" Style="{StaticResource CaptionTextStyle}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Grid.Column="5" Height="1" Background="{DynamicResource BorderNeutralBrush}" VerticalAlignment="Center" />
+
+                    <Grid Grid.Column="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border>
+                            <Border.Style>
+                                <Style TargetType="Border" BasedOn="{StaticResource StepNumberStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSignatureStage}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
+                                            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="4" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Sign" Style="{StaticResource CardTitleStyle}" />
+                            <TextBlock Text="Prepare and finalize" Style="{StaticResource CaptionTextStyle}" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="44" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Width="36"
+                            Height="36"
+                            CornerRadius="8"
+                            Background="{DynamicResource AccentLightBrush}"
+                            VerticalAlignment="Top">
+                        <TextBlock Text="&#xE710;"
+                                   FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                   Foreground="{DynamicResource AccentBrush}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+
+                    <StackPanel Grid.Column="1" Margin="4,0,20,0">
+                        <TextBlock Text="1. Create a working 1297" Style="{StaticResource SectionTitleStyle}" />
+                        <TextBlock Text="The app copies the approved template into protected working storage. The original template is never edited."
+                                   Style="{StaticResource PageSubtitleStyle}" />
+
+                        <Border Style="{StaticResource InsetPanelStyle}"
+                                Margin="0,14,0,0"
+                                Visibility="{Binding HasActiveTransaction, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Current file" Style="{StaticResource CaptionTextStyle}" Margin="0,0,12,0" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding CurrentPdfPath}"
+                                           Style="{StaticResource MonospaceTextStyle}"
+                                           TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <Button Grid.Column="2"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding StartTransactionCommand}"
+                            VerticalAlignment="Top"
+                            automation:AutomationProperties.Name="Create new 1297">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE710;" Style="{StaticResource ButtonIconStyle}" />
+                            <TextBlock Text="Create new 1297" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}"
+                    IsEnabled="{Binding CanEnterDevices}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="2. Scan or enter all devices" Style="{StaticResource SectionTitleStyle}" />
+                            <TextBlock Text="Scanner input is submitted automatically when the scan stops. Enter remains available for manual Add or Update. Saved rows remain editable until the PDF is prepared."
+                                       Style="{StaticResource PageSubtitleStyle}" />
+                        </StackPanel>
+                        <Border Grid.Column="1" Style="{StaticResource StatusPillStyle}" VerticalAlignment="Top">
+                            <TextBlock Text="{Binding DeviceCount, StringFormat=Devices: {0}}"
+                                       Foreground="{DynamicResource InfoBrush}"
+                                       FontSize="12"
+                                       FontWeight="SemiBold" />
+                        </Border>
+                    </Grid>
+
+                    <Border Margin="0,16,0,0" Style="{StaticResource InfoCalloutStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="24" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE946;"
+                                       FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                       Foreground="{DynamicResource InfoBrush}"
+                                       VerticalAlignment="Top" />
+                            <TextBlock Grid.Column="1" Style="{StaticResource SupportingTextStyle}">
+                                <Run Text="DoD IUID: " FontWeight="SemiBold" />
+                                <Run Text="1P or 30P is the part number, S is the serial number, and 18S supplies only a serial number. Enterprise/CAGE data is ignored and the original scan is retained locally." />
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+
+                    <Grid Margin="0,18,0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="48" />
+                            <ColumnDefinition Width="1.8*" />
+                            <ColumnDefinition Width="1.1*" />
+                            <ColumnDefinition Width="1.2*" />
+                            <ColumnDefinition Width="1.15*" />
+                            <ColumnDefinition Width="0.9*" />
+                            <ColumnDefinition Width="104" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="#" Style="{StaticResource FieldLabelStyle}" HorizontalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="Scan value" Style="{StaticResource FieldLabelStyle}" />
+                        <TextBlock Grid.Column="2" Text="Part number" Style="{StaticResource FieldLabelStyle}" />
+                        <TextBlock Grid.Column="3" Text="Model name" Style="{StaticResource FieldLabelStyle}" />
+                        <TextBlock Grid.Column="4" Text="Serial number" Style="{StaticResource FieldLabelStyle}" />
+                        <TextBlock Grid.Column="5" Text="Asset tag" Style="{StaticResource FieldLabelStyle}" />
+                        <TextBlock Grid.Column="6" Text="Action" Style="{StaticResource FieldLabelStyle}" />
+                    </Grid>
+
+                    <ItemsControl x:Name="DeviceEntryList" ItemsSource="{Binding DeviceEntries}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{DynamicResource BorderNeutralBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="{StaticResource RadiusMedium}"
+                                        Padding="10"
+                                        Margin="0,0,0,8"
+                                        Background="{DynamicResource SurfaceSecondaryBrush}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="38" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="1.8*" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="1.1*" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="1.2*" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="1.15*" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="0.9*" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="94" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <Border Width="28"
+                                                Height="28"
+                                                CornerRadius="14"
+                                                Background="{DynamicResource SurfaceTertiaryBrush}"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding RowNumber}"
+                                                       FontSize="12"
+                                                       FontWeight="SemiBold"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+                                        </Border>
+                                        <TextBox Grid.Column="2"
+                                                 Text="{Binding ScanInput, UpdateSourceTrigger=PropertyChanged}"
+                                                 MaxLength="4096"
+                                                 Tag="{Binding}"
+                                                 TextChanged="ScanTextBox_OnTextChanged"
+                                                 PreviewKeyDown="DeviceEntry_OnPreviewKeyDown"
+                                                 ToolTip="Place scanner focus here. Input is submitted after the scanner stops; Enter is an optional fallback."
+                                                 automation:AutomationProperties.Name="Device scan value" />
+                                        <TextBox Grid.Column="4"
+                                                 Text="{Binding PartNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                 MaxLength="128"
+                                                 Tag="{Binding}"
+                                                 PreviewKeyDown="DeviceEntry_OnPreviewKeyDown"
+                                                 automation:AutomationProperties.Name="Part number" />
+                                        <TextBox Grid.Column="6"
+                                                 Text="{Binding ModelName, UpdateSourceTrigger=PropertyChanged}"
+                                                 MaxLength="128"
+                                                 Tag="{Binding}"
+                                                 PreviewKeyDown="DeviceEntry_OnPreviewKeyDown"
+                                                 automation:AutomationProperties.Name="Common model name" />
+                                        <TextBox Grid.Column="8"
+                                                 Text="{Binding SerialNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                 MaxLength="128"
+                                                 Tag="{Binding}"
+                                                 PreviewKeyDown="DeviceEntry_OnPreviewKeyDown"
+                                                 automation:AutomationProperties.Name="Serial number" />
+                                        <TextBox Grid.Column="10"
+                                                 Text="{Binding AssetTag, UpdateSourceTrigger=PropertyChanged}"
+                                                 MaxLength="128"
+                                                 Tag="{Binding}"
+                                                 PreviewKeyDown="DeviceEntry_OnPreviewKeyDown"
+                                                 automation:AutomationProperties.Name="Optional asset tag" />
+                                        <Button Grid.Column="12"
+                                                Content="{Binding ActionLabel}"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                Command="{Binding DataContext.CommitDeviceEntryCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                automation:AutomationProperties.Name="{Binding ActionLabel}" />
+
+                                        <TextBlock Grid.Row="1"
+                                                   Grid.Column="2"
+                                                   Grid.ColumnSpan="11"
+                                                   Text="{Binding Feedback}"
+                                                   Margin="0,7,0,0"
+                                                   Style="{StaticResource CaptionTextStyle}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Grid Margin="0,12,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Captured devices" Style="{StaticResource CardTitleStyle}" />
+                                <TextBlock Text="Select a row here to remove it before preparing the PDF."
+                                           Style="{StaticResource CaptionTextStyle}"
+                                           Margin="0,3,0,0" />
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Style="{StaticResource DangerButtonStyle}"
+                                    Command="{Binding RemoveDeviceCommand}"
+                                    automation:AutomationProperties.Name="Remove selected device">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE74D;" Style="{StaticResource ButtonIconStyle}" />
+                                    <TextBlock Text="Remove selected" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="0,12,0,0" MinHeight="150">
+                            <DataGrid ItemsSource="{Binding Devices}"
+                                      SelectedItem="{Binding SelectedDevice}"
+                                      IsReadOnly="True"
+                                      Visibility="{Binding HasDevices, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                      automation:AutomationProperties.Name="Captured devices">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Model name" Binding="{Binding Model}" Width="*" />
+                                    <DataGridTextColumn Header="Part number" Binding="{Binding PartNumber}" Width="*" />
+                                    <DataGridTextColumn Header="Serial number" Binding="{Binding SerialNumber}" Width="*" />
+                                    <DataGridTextColumn Header="Asset tag" Binding="{Binding AssetTag}" Width="*" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Border Style="{StaticResource EmptyStatePanelStyle}"
+                                    Visibility="{Binding HasNoDevices, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="No devices captured yet" Style="{StaticResource CardTitleStyle}" HorizontalAlignment="Center" />
+                                    <TextBlock Text="Scan into the first row or enter the part and serial manually. Scans submit automatically; Enter is available for manual entries."
+                                               Style="{StaticResource SupportingTextStyle}"
+                                               TextAlignment="Center"
+                                               Margin="0,5,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}"
+                    IsEnabled="{Binding CanEnterDevices}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="3. Complete customer and ticket details" Style="{StaticResource SectionTitleStyle}" />
+                            <TextBlock Text="Only certificates from cards currently inserted in connected readers are shown. Parsed name and rank values remain editable."
+                                       Style="{StaticResource PageSubtitleStyle}" />
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Command="{Binding RefreshCacCommand}"
+                                VerticalAlignment="Top"
+                                Margin="20,0,0,0"
+                                automation:AutomationProperties.Name="Refresh CAC certificates">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE72C;" Style="{StaticResource ButtonIconStyle}" />
+                                <TextBlock Text="Refresh CAC" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <Grid Margin="0,18,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.35*" />
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Customer CAC certificate" Style="{StaticResource FieldLabelStyle}" />
+                            <ComboBox ItemsSource="{Binding CacCertificates}"
+                                      SelectedItem="{Binding SelectedCacCertificate}"
+                                      DisplayMemberPath="DisplayName"
+                                      automation:AutomationProperties.Name="Customer CAC certificate" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Technician name and grade" Style="{StaticResource FieldLabelStyle}" />
+                            <ComboBox ItemsSource="{Binding TechnicianSuggestions}"
+                                      Text="{Binding Technician, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEditable="True"
+                                      IsTextSearchEnabled="True"
+                                      StaysOpenOnEdit="True"
+                                      ToolTip="Recent technicians appear first. You may type a new name and grade."
+                                      automation:AutomationProperties.Name="Technician name and grade" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Separator />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="130" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="96" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="170" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Rank" Style="{StaticResource FieldLabelStyle}" />
+                            <ComboBox ItemsSource="{Binding RankOptions}"
+                                      Text="{Binding Rank, UpdateSourceTrigger=PropertyChanged}"
+                                      ToolTip="Verify or enter rank when the active CAC does not supply it."
+                                      IsEditable="True"
+                                      IsTextSearchEnabled="True"
+                                      automation:AutomationProperties.Name="Customer rank" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="First name" Style="{StaticResource FieldLabelStyle}" />
+                            <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxLength="80"
+                                     automation:AutomationProperties.Name="Customer first name" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Middle initial" Style="{StaticResource FieldLabelStyle}" />
+                            <TextBox Text="{Binding MiddleInitial, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxLength="1"
+                                     automation:AutomationProperties.Name="Customer middle initial" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="6">
+                            <TextBlock Text="Last name" Style="{StaticResource FieldLabelStyle}" />
+                            <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxLength="80"
+                                     automation:AutomationProperties.Name="Customer last name" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="8">
+                            <TextBlock Text="Duty phone" Style="{StaticResource FieldLabelStyle}" />
+                            <TextBox Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxLength="40"
+                                     automation:AutomationProperties.Name="Duty phone" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Organization" Style="{StaticResource FieldLabelStyle}" />
+                            <ComboBox ItemsSource="{Binding Organizations}"
+                                      SelectedItem="{Binding SelectedOrganization}"
+                                      automation:AutomationProperties.Name="Organization" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Ticket number" Style="{StaticResource FieldLabelStyle}" />
+                            <TextBox Text="{Binding TicketNumber, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxLength="80"
+                                     automation:AutomationProperties.Name="Ticket number" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Text="4. Prepare, sign, and finalize" Style="{StaticResource SectionTitleStyle}" />
+                    <TextBlock Text="The app fills the approved 1297 fields, including DATE OF ISSUE, RETURN DATE, and QNTY. The cleaned template contains no PDF JavaScript."
+                               Style="{StaticResource PageSubtitleStyle}" />
+
+                    <Border Margin="0,16,0,0" Style="{StaticResource InfoCalloutStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="24" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="24" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="1 · Prepare" Style="{StaticResource CardTitleStyle}" />
+                                <TextBlock Text="Fill the PDF and open Adobe." Style="{StaticResource CaptionTextStyle}" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <TextBlock Grid.Column="1" Text="&#xE76C;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Foreground="{DynamicResource InfoBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="2 · Sign and save" Style="{StaticResource CardTitleStyle}" />
+                                <TextBlock Text="Apply required signatures, save, and close Adobe." Style="{StaticResource CaptionTextStyle}" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <TextBlock Grid.Column="3" Text="&#xE76C;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Foreground="{DynamicResource InfoBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="3 · Finalize" Style="{StaticResource CardTitleStyle}" />
+                                <TextBlock Text="Verify the signature and commit the record." Style="{StaticResource CaptionTextStyle}" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Grid Margin="0,18,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button Style="{StaticResource PrimaryButtonStyle}"
+                                Command="{Binding PrepareAndOpenCommand}"
+                                automation:AutomationProperties.Name="Prepare and open PDF in Adobe">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE8A5;" Style="{StaticResource ButtonIconStyle}" />
+                                <TextBlock Text="Prepare and open in Adobe" />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Column="2"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Command="{Binding FinalizeCommand}"
+                                automation:AutomationProperties.Name="Finalize signed PDF">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE8FB;" Style="{StaticResource ButtonIconStyle}" />
+                                <TextBlock Text="Finalize signed PDF" />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Column="4"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Command="{Binding OpenCurrentPdfCommand}"
+                                automation:AutomationProperties.Name="Open current PDF">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE8A5;" Style="{StaticResource ButtonIconStyle}" />
+                                <TextBlock Text="Open current PDF" />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Column="6"
+                                Style="{StaticResource DangerButtonStyle}"
+                                Command="{Binding ResetCommand}"
+                                ToolTip="Clear the current uncommitted intake and return to step 1"
+                                automation:AutomationProperties.Name="Reset current transaction">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE74D;" Style="{StaticResource ButtonIconStyle}" />
+                                <TextBlock Text="Reset transaction" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <Border Margin="0,18,0,0" Style="{StaticResource InsetPanelStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="24" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE946;"
+                                       FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                       Foreground="{DynamicResource InfoBrush}"
+                                       VerticalAlignment="Top" />
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Current workflow status" Style="{StaticResource CardTitleStyle}" />
+                                <TextBlock Text="{Binding WorkflowStatus}"
+                                           Style="{StaticResource SupportingTextStyle}"
+                                           Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

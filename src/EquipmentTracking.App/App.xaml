@@ -1,0 +1,34 @@
+<Application x:Class="EquipmentTracking.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModels="clr-namespace:EquipmentTracking.App.ViewModels"
+             xmlns:views="clr-namespace:EquipmentTracking.App.Views"
+             ShutdownMode="OnMainWindowClose"
+             ThemeMode="Dark">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/LayoutStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type viewModels:DashboardViewModel}">
+                <views:DashboardView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:IntakeViewModel}">
+                <views:IntakeView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:ReturnsViewModel}">
+                <views:ReturnsView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:RecoveryViewModel}">
+                <views:RecoveryView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:HowToUseViewModel}">
+                <views:HowToUseView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:SettingsViewModel}">
+                <views:SettingsView />
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

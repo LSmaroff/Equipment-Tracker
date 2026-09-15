@@ -1,0 +1,11 @@
+root = true
+
+[*.cs]
+# Public instance services and WPF-bound properties intentionally remain instance-based.
+# Continue reporting CA1822 for private/internal members where making a helper static
+# is an implementation detail rather than a public API or binding change.
+dotnet_code_quality.CA1822.api_surface = private, internal
+
+[tests/**/*.cs]
+# Behavior-oriented xUnit method names intentionally use underscores for readability.
+dotnet_diagnostic.CA1707.severity = none

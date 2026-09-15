@@ -1,0 +1,147 @@
+<Window x:Class="EquipmentTracking.App.Views.CloseoutDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:automation="clr-namespace:System.Windows.Automation;assembly=PresentationCore"
+        Title="{Binding Title}"
+        Width="700"
+        Height="620"
+        MinWidth="560"
+        MinHeight="430"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip"
+        ShowInTaskbar="False"
+        Style="{StaticResource DialogWindowStyle}">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="46" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Width="38"
+                    Height="38"
+                    CornerRadius="9"
+                    Background="{DynamicResource AccentLightBrush}"
+                    VerticalAlignment="Top">
+                <TextBlock Text="&#xE8FB;"
+                           FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                           Foreground="{DynamicResource AccentBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+            </Border>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitleStyle}" />
+                <TextBlock Text="{Binding Subtitle}"
+                           TextWrapping="Wrap"
+                           Style="{StaticResource PageSubtitleStyle}" />
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1"
+                      Margin="0,18,0,0"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="0,0,8,0">
+                <Border Style="{StaticResource InsetPanelStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Ticket number" Style="{StaticResource FieldLabelStyle}" Margin="0" />
+                        <TextBlock Grid.Column="1" Text="{Binding Transaction.TicketNumber}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="1" Text="Customer" Style="{StaticResource FieldLabelStyle}" Margin="0,11,0,0" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Transaction.Customer.DisplayName}" Margin="0,11,0,0" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="2" Text="Organization" Style="{StaticResource FieldLabelStyle}" Margin="0,11,0,0" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Transaction.Organization}" Margin="0,11,0,0" TextWrapping="Wrap" />
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource InfoCalloutStyle}" Margin="0,16,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="26" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="&#xE946;"
+                                   FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                   Foreground="{DynamicResource InfoBrush}"
+                                   VerticalAlignment="Top" />
+                        <TextBlock Grid.Column="1" Style="{StaticResource SupportingTextStyle}">
+                            Have the customer sign the exact <Bold>Pickup Signature</Bold> field. Save the PDF and close Adobe before finalizing. Existing issue signatures do not count as a pickup signature.
+                        </TextBlock>
+                    </Grid>
+                </Border>
+
+                <TextBlock Text="{Binding TechnicianLabel}"
+                           Style="{StaticResource FieldLabelStyle}"
+                           Margin="0,18,0,0" />
+                <ComboBox ItemsSource="{Binding TechnicianSuggestions}"
+                          IsEnabled="{Binding CanEditTechnician}"
+                          Text="{Binding Technician, UpdateSourceTrigger=PropertyChanged}"
+                          IsEditable="True"
+                          IsTextSearchEnabled="True"
+                          automation:AutomationProperties.Name="{Binding TechnicianLabel}" />
+
+                <Button Style="{StaticResource SecondaryButtonStyle}"
+                        Command="{Binding OpenPdfCommand}"
+                        HorizontalAlignment="Left"
+                        Margin="0,16,0,0"
+                        automation:AutomationProperties.Name="Open or reopen PDF in Adobe">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE8A5;" Style="{StaticResource ButtonIconStyle}" />
+                        <TextBlock Text="Open or reopen PDF in Adobe" />
+                    </StackPanel>
+                </Button>
+
+                <Border Style="{StaticResource InsetPanelStyle}" Margin="0,18,0,4">
+                    <CheckBox IsChecked="{Binding ConfirmedSavedAndClosed}"
+                              FontWeight="SemiBold"
+                              automation:AutomationProperties.Name="Confirm Pickup Signature was applied and Adobe is closed">
+                        <TextBlock Text="I confirmed the Pickup Signature was applied, the PDF was saved, and Adobe is closed."
+                                   TextWrapping="Wrap" />
+                    </CheckBox>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Grid Grid.Row="2" Margin="0,18,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="{Binding FinalizeRequirementMessage}"
+                       Style="{StaticResource SupportingTextStyle}"
+                       Margin="0,0,0,12" />
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel"
+                        Style="{StaticResource TertiaryButtonStyle}"
+                        IsCancel="True"
+                        Margin="0,0,10,0" />
+                <Button Style="{StaticResource PrimaryButtonStyle}"
+                        IsDefault="True"
+                        IsEnabled="{Binding CanFinalize}"
+                        ToolTip="{Binding FinalizeRequirementMessage}"
+                        Click="Finalize_OnClick"
+                        automation:AutomationProperties.Name="{Binding FinalizeLabel}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE8FB;" Style="{StaticResource ButtonIconStyle}" />
+                        <TextBlock Text="{Binding FinalizeLabel}" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

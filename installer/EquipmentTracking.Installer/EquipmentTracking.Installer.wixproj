@@ -1,0 +1,12 @@
+<Project Sdk="WixToolset.Sdk/6.0.2">
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <Cultures>en-US</Cultures>
+    <PublishDirectory Condition="'$(PublishDirectory)' == ''">$(MSBuildProjectDirectory)\..\..\artifacts\publish\win-x64</PublishDirectory>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">0.9.4</ProductVersion>
+    <DefineConstants>$(DefineConstants);PublishDirectory=$(PublishDirectory);ProductVersion=$(ProductVersion)</DefineConstants>
+    <OutputPath>$(MSBuildProjectDirectory)\..\..\artifacts\installer\</OutputPath>
+    <OutputName>EquipmentTrackingPlatform-$(ProductVersion)-win-x64</OutputName>
+  </PropertyGroup>
+</Project>

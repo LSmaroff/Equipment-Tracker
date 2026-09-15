@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>false</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>EquipmentTrackingPlatform</AssemblyName>
+    <RootNamespace>EquipmentTracking.App</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\EquipmentTrackingPlatform.ico</ApplicationIcon>
+    <Platforms>AnyCPU</Platforms>
+    <Version>0.9.4-alpha.1</Version>
+    <FileVersion>0.9.4.1</FileVersion>
+    <AssemblyVersion>0.9.4.0</AssemblyVersion>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <Deterministic>true</Deterministic>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\EquipmentTrackingPlatform.ico" />
+    <Resource Include="Assets\EquipmentTrackingPlatform.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.1" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.10" />
+    <PackageReference Include="SQLitePCLRaw.bundle_winsqlite3" Version="2.1.11" />
+    <PackageReference Include="PDFsharp-WPF" Version="6.2.4" />
+    <PackageReference Include="QRCoder" Version="1.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.default.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Templates\README.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Templates\1297-58SOW-SC-TEMPLATE.pdf" Condition="Exists('Templates\1297-58SOW-SC-TEMPLATE.pdf')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,37 @@
+bin/
+obj/
+.vs/
+TestResults/
+*.user
+*.suo
+*.nupkg
+publish/
+artifacts/
+tmp/
+.codex/
+.env
+.env.*
+!.env.example
+*.log
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.bak
+*.pem
+*.cer
+*.crt
+
+# Never commit signing private keys or protected certificate bundles.
+*.pfx
+*.p12
+*.pvk
+*.key
+*.snk
+
+# Keep only the approved cleaned application template in source control.
+src/EquipmentTracking.App/Templates/*.pdf
+!src/EquipmentTracking.App/Templates/1297-58SOW-SC-TEMPLATE.pdf
+!src/EquipmentTracking.App/Templates/README.txt

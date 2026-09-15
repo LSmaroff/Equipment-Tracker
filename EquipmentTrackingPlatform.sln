@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentTracking.App", "src\EquipmentTracking.App\EquipmentTracking.App.csproj", "{0E4B8A21-1C47-43A2-9235-4D46B69157F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentTracking.Tests", "tests\EquipmentTracking.Tests\EquipmentTracking.Tests.csproj", "{6DF2A75A-2B5D-4C35-92C7-D4F086C8EF93}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {0E4B8A21-1C47-43A2-9235-4D46B69157F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {0E4B8A21-1C47-43A2-9235-4D46B69157F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {0E4B8A21-1C47-43A2-9235-4D46B69157F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {0E4B8A21-1C47-43A2-9235-4D46B69157F7}.Release|Any CPU.Build.0 = Release|Any CPU
+        {6DF2A75A-2B5D-4C35-92C7-D4F086C8EF93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {6DF2A75A-2B5D-4C35-92C7-D4F086C8EF93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {6DF2A75A-2B5D-4C35-92C7-D4F086C8EF93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {6DF2A75A-2B5D-4C35-92C7-D4F086C8EF93}.Release|Any CPU.Build.0 = Release|Any CPU
+    EndGlobalSection
+EndGlobal

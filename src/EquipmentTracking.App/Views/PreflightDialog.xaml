@@ -1,0 +1,103 @@
+<Window x:Class="EquipmentTracking.App.Views.PreflightDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Equipment Tracking readiness check"
+        Width="940"
+        Height="650"
+        MinWidth="720"
+        MinHeight="480"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource DialogWindowStyle}">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="46" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Width="38" Height="38" CornerRadius="9" Background="{DynamicResource AccentLightBrush}" VerticalAlignment="Top">
+                <TextBlock Text="&#xE73E;"
+                           FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                           Foreground="{DynamicResource AccentBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+            </Border>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="Startup readiness check" Style="{StaticResource PageTitleStyle}" />
+                <TextBlock Text="Local checks identify conditions that could block safe intake, status, recovery, or closeout work."
+                           Style="{StaticResource PageSubtitleStyle}" />
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Row="1" Style="{StaticResource InfoCalloutStyle}" Margin="0,16,0,14">
+            <TextBlock x:Name="SummaryText" Style="{StaticResource SupportingTextStyle}" />
+        </Border>
+
+        <DataGrid Grid.Row="2"
+                  x:Name="ChecksGrid"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding Checks}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Check" Binding="{Binding Name}" Width="2*" />
+                <DataGridTemplateColumn Header="Result" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border Padding="9,3" CornerRadius="12" HorizontalAlignment="Left">
+                                <Border.Style>
+                                    <Style TargetType="Border" BasedOn="{StaticResource NeutralPillStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding StatusText}" Value="Ready">
+                                                <Setter Property="Background" Value="{DynamicResource SuccessSurfaceBrush}" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource SuccessBrush}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding StatusText}" Value="Warning">
+                                                <Setter Property="Background" Value="{DynamicResource WarningSurfaceBrush}" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource WarningBrush}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding StatusText}" Value="Failed">
+                                                <Setter Property="Background" Value="{DynamicResource DangerSurfaceBrush}" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource DangerBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="{Binding StatusText}" FontSize="12" FontWeight="SemiBold" />
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Details" Binding="{Binding Message}" Width="4*" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="3" Margin="0,18,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="BlockingText"
+                       VerticalAlignment="Center"
+                       Style="{StaticResource SupportingTextStyle}"
+                       Margin="0,0,18,0" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="Exit"
+                        Style="{StaticResource TertiaryButtonStyle}"
+                        IsCancel="True"
+                        Click="Exit_Click"
+                        Margin="0,0,10,0" />
+                <Button x:Name="ContinueButton"
+                        Content="Continue"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        IsDefault="True"
+                        Click="Continue_Click" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

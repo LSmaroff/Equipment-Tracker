@@ -1,0 +1,228 @@
+<UserControl x:Class="EquipmentTracking.App.Views.HowToUseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel>
+            <TextBlock Text="How to use" Style="{StaticResource PageTitleStyle}" />
+            <TextBlock Text="A local operator guide for the complete 1297 workflow. No network connection is required."
+                       Style="{StaticResource PageSubtitleStyle}"
+                       Margin="0,0,0,20" />
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Text="Normal workflow" Style="{StaticResource SectionTitleStyle}" />
+                    <TextBlock Text="Complete these steps in order. Recovery is available if intake or closeout is interrupted."
+                               Style="{StaticResource PageSubtitleStyle}"
+                               Margin="0,0,0,18" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="44" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource StepNumberStyle}" VerticalAlignment="Top">
+                            <TextBlock Text="1" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Start a new intake" Style="{StaticResource CardTitleStyle}" />
+                            <TextBlock Style="{StaticResource SupportingTextStyle}" Margin="0,5,0,0">
+                                Open <Bold>New intake</Bold> and select <Bold>Create new 1297</Bold>. The app makes a protected working copy of the approved template. Do not move or rename that working PDF.
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+
+                    <Separator Margin="44,16,0,16" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="44" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource StepNumberStyle}" VerticalAlignment="Top">
+                            <TextBlock Text="2" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Scan and verify devices" Style="{StaticResource CardTitleStyle}" />
+                            <TextBlock Style="{StaticResource SupportingTextStyle}" Margin="0,5,0,0">
+                                Scan into the current row. Scanner-speed input is submitted automatically after a short pause and focus moves to the next row; <Bold>Enter</Bold> remains a manual fallback. You can also type the part, a multiword common model name with spaces, and the serial, then choose <Bold>Add</Bold>. Exact known identities and saved part/model mappings can fill missing values without changing the scan-and-add workflow. The reported HP scan with CAGE <Bold>7ESQ7</Bold> and serial <Bold>2MQ5390WTS</Bold> fills part <Bold>A4TH1AV</Bold> and model <Bold>HP EliteBook 645</Bold>; a different CAGE or serial is not guessed. The original scan is retained locally, and every filled value remains editable. Correct a saved row and choose <Bold>Update</Bold>. One serial cannot be active on two 1297s.
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+
+                    <Separator Margin="44,16,0,16" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="44" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource StepNumberStyle}" VerticalAlignment="Top">
+                            <TextBlock Text="3" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Complete customer and ticket details" Style="{StaticResource CardTitleStyle}" />
+                            <TextBlock Style="{StaticResource SupportingTextStyle}" Margin="0,5,0,0">
+                                Insert the customer CAC and choose <Bold>Refresh CAC</Bold> when identity information is needed. Select only the certificate shown for the inserted card, verify the parsed rank and name, then enter organization, duty phone, technician, and ticket number.
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+
+                    <Separator Margin="44,16,0,16" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="44" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource StepNumberStyle}" VerticalAlignment="Top">
+                            <TextBlock Text="4" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Prepare and sign the intake" Style="{StaticResource CardTitleStyle}" />
+                            <TextBlock Style="{StaticResource SupportingTextStyle}" Margin="0,5,0,0">
+                                Choose <Bold>Prepare and open in Adobe</Bold>. The unique 1297 ID and its QR code are added to the form. Review the filled fields, apply the required CAC signatures in Adobe, save the PDF, and close Adobe. Return to the app and choose <Bold>Finalize signed PDF</Bold>. If a part number has no known common model, enter it in the prompt or skip it for now; saved names are reused on future scans.
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+
+                    <Separator Margin="44,16,0,16" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="44" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource StepNumberStyle}" VerticalAlignment="Top">
+                            <TextBlock Text="5" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Update status or record a partial pickup" Style="{StaticResource CardTitleStyle}" />
+                            <TextBlock Style="{StaticResource SupportingTextStyle}" Margin="0,5,0,0">
+                                In <Bold>Equipment status</Bold>, scan the printed 1297 QR code to show every active device on that record, or search by 1297 ID, ticket, customer, model, serial, part, asset tag, organization, or status. The QR scan submits without Enter. Double-click a row to open its 1297. Ordinary device-status edits continue to use the existing controls. For a subset pickup, select the active parent 1297 on <Bold>Dashboard</Bold> and choose <Bold>Partial pickup</Bold>. Scan a device barcode, exact serial, or exact asset tag and press Enter, select individual checkboxes, or choose <Bold>Select ready</Bold>; use <Bold>Clear</Bold> to start the selection over. Review the selected and remaining counts before preparing the copy. If one Equipment status update contains both pickup selections and ordinary working-status edits, the signed pickup is verified and saved first; the ordinary edits are applied afterward. Canceling or failing pickup verification leaves those ordinary edits unapplied so they can be reviewed again.
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+
+                    <Separator Margin="44,16,0,16" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="44" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource StepNumberStyle}" VerticalAlignment="Top" Background="{DynamicResource AccentLightBrush}" BorderBrush="{DynamicResource AccentBrush}">
+                            <TextBlock Text="6" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Sign pickups, review documents, and archive" Style="{StaticResource CardTitleStyle}" />
+                            <TextBlock Style="{StaticResource SupportingTextStyle}" Margin="0,5,0,0">
+                                A partial pickup opens a separate 1297 copy made from the preserved original signed intake. Only the devices selected for that pickup are crossed out and the return date is filled. Have the customer sign the exact <Bold>Pickup Signature</Bold> field in Adobe, save, close Adobe, then verify and save the pickup. No selected device becomes Returned until verification succeeds. The parent 1297 stays active while devices remain; repeat with a new signed copy for each later subset. The last verified pickup archives the one parent with all signed pickup copies. Use <Bold>Documents</Bold> on Dashboard to open the original, current or final copy, and each signed pickup identified by device numbers and signer. The existing <Bold>Close out 1297</Bold> command remains available when the full-record closeout workflow is appropriate. Dashboard type/scan-to-search and the labeled chart legend/hover details work as before.
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="&#xE777;"
+                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                               Foreground="{DynamicResource AccentBrush}"
+                               FontSize="17"
+                               VerticalAlignment="Top" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Install an offline update" Style="{StaticResource SectionTitleStyle}" />
+                        <TextBlock Style="{StaticResource SupportingTextStyle}" Margin="0,5,0,0">
+                            Resolve unfinished items in <Bold>Recovery</Bold>, then open <Bold>Settings</Bold> and choose <Bold>Install update package…</Bold>. Select a newer approved MSI. Keep its <Bold>release-manifest.json</Bold> in the same folder for hash and size verification. After confirmation, the app creates a verified database/settings backup, starts Windows Installer, and closes. Administrator approval is required.
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="&#xE749;"
+                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                               Foreground="{DynamicResource AccentBrush}"
+                               FontSize="17"
+                               VerticalAlignment="Top" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Print two 1297 copies on one sheet" Style="{StaticResource SectionTitleStyle}" />
+                        <TextBlock Style="{StaticResource SupportingTextStyle}" Margin="0,5,0,0">
+                            On <Bold>Dashboard</Bold>, select an active or archived record and choose <Bold>Print 1297's</Bold>. The app creates one portrait US Letter page with the same 1297 on the top and bottom and a dashed cut guide between them. All form text is redrawn in bold Arial with consistent padding, alignment, and wrapping for print clarity; signature appearances stay unchanged. Keep the Equipment Tracking Platform printing notice open until printing is finished; closing it removes the temporary print PDF. In the print dialog, use Letter paper, portrait orientation, one-sided printing, and leave the printer copy count at 1 unless more than one two-copy sheet is needed. The tracked PDF and preserved signed original are never changed.
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource InfoCalloutStyle}" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="32" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="&#xE777;"
+                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                               Foreground="{DynamicResource InfoBrush}"
+                               FontSize="16"
+                               VerticalAlignment="Top" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="If an operation is interrupted" Style="{StaticResource CardTitleStyle}" />
+                        <TextBlock Style="{StaticResource SupportingTextStyle}" Margin="0,5,0,0">
+                            Open <Bold>Recovery</Bold> and select the saved intake, closeout, or partial-pickup operation. For an unfinished pickup, choose <Bold>Open PDF</Bold>, finish the Pickup Signature in Adobe, save and close Adobe, then choose <Bold>Resume</Bold>. Use <Bold>Roll back</Bold> only when an incomplete operation should be abandoned. A changed pickup attempt is preserved as evidence. The app refuses rollback after a signed pickup receipt has been committed; reopen its parent record and documents instead.
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="&#xE896;"
+                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                               Foreground="{DynamicResource AccentBrush}"
+                               FontSize="17"
+                               VerticalAlignment="Top" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Backups and restore" Style="{StaticResource SectionTitleStyle}" />
+                        <TextBlock Style="{StaticResource SupportingTextStyle}" Margin="0,5,0,0">
+                            Keep the application open for the Monday 09:00 full and Monday–Friday 16:00 differential schedule. A missed run catches up when the app next opens. In <Bold>Settings</Bold>, confirm the status and destination, or choose <Bold>Create full backup now</Bold>. A full protects the database, settings, completed/original/archive PDFs, and committed signed pickup receipts; a differential protects a complete current database plus PDF additions, changes, moves, and deletions since Monday. Keep each differential beside its Monday full. Restore verifies and stages the chain, then applies it on restart after making a safety copy. Use an approved second drive when protection from workstation-drive failure is required.
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="&#xE897;"
+                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                               Foreground="{DynamicResource AccentBrush}"
+                               FontSize="17"
+                               VerticalAlignment="Top" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Readiness and support" Style="{StaticResource SectionTitleStyle}" />
+                        <TextBlock Style="{StaticResource SupportingTextStyle}">
+                            In <Bold>Settings</Bold>, choose <Bold>Run readiness check</Bold> to inspect local storage, SQLite, the exact template, PDF application, smart-card readers, and free space. Choose <Bold>Create support package</Bold> for sanitized troubleshooting data; operational PDFs and the database are excluded by default.
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
