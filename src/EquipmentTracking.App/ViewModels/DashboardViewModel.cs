@@ -20,6 +20,7 @@ public sealed class DashboardViewModel : ObservableObject
     private readonly TransactionWorkflowService _workflow;
     private readonly AdobeService _adobe;
     private readonly PrintJobService _printJobs;
+    private readonly TransactionDocumentService _documents;
     private readonly RecordCodeService _recordCodes;
     private readonly StatusService _status;
     private readonly FileLogger _logger;
@@ -40,18 +41,20 @@ public sealed class DashboardViewModel : ObservableObject
         PrintJobService printJobs,
         RecordCodeService recordCodes,
         StatusService status,
-        FileLogger logger)
+        FileLogger logger,
+        TransactionDocumentService documents)
     {
         _database = database;
         _workflow = workflow;
         _adobe = adobe;
         _printJobs = printJobs;
+        _documents = documents;
         _recordCodes = recordCodes;
         _status = status;
         _logger = logger;
         RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !IsBusy);
         SearchCommand = new AsyncRelayCommand(SearchAsync, () => !IsBusy);
-        OpenSelectedPdfCommand = new RelayCommand(OpenSelectedPdf, () => SelectedTransaction is not null);
+        OpenSelectedPdfCommand = new AsyncRelayCommand(OpenSelectedPdfAsync, () => !IsBusy && SelectedTransaction is not null);
         PrintTwoCopiesCommand = new AsyncRelayCommand(
             PrintTwoCopiesAsync,
             () => !IsBusy && SelectedTransaction is not null);
@@ -70,7 +73,7 @@ public sealed class DashboardViewModel : ObservableObject
     public ObservableCollection<PieChartSlice> ChartSlices { get; } = [];
     public AsyncRelayCommand RefreshCommand { get; }
     public AsyncRelayCommand SearchCommand { get; }
-    public RelayCommand OpenSelectedPdfCommand { get; }
+    public AsyncRelayCommand OpenSelectedPdfCommand { get; }
     public AsyncRelayCommand PrintTwoCopiesCommand { get; }
     public AsyncRelayCommand CloseoutSelectedCommand { get; }
     public AsyncRelayCommand PartialPickupCommand { get; }
@@ -191,6 +194,7 @@ public sealed class DashboardViewModel : ObservableObject
             if (SetProperty(ref _isBusy, value))
             {
                 RefreshCommand.RaiseCanExecuteChanged();
+                OpenSelectedPdfCommand.RaiseCanExecuteChanged();
                 SearchCommand.RaiseCanExecuteChanged();
                 PrintTwoCopiesCommand.RaiseCanExecuteChanged();
                 CloseoutSelectedCommand.RaiseCanExecuteChanged();
@@ -241,7 +245,8 @@ public sealed class DashboardViewModel : ObservableObject
             new TransactionDocumentsDialog
             {
                 Owner = Application.Current.MainWindow,
-                DataContext = new TransactionDocumentsDialogViewModel(transaction, artifacts, pickups, devices, _adobe)
+                DataContext = new TransactionDocumentsDialogViewModel(transaction, artifacts, pickups, devices, _adobe,
+                    _documents, _printJobs)
             }.ShowDialog();
         }
         catch (Exception ex) { ShowError("1297 documents", ex); }
@@ -355,11 +360,18 @@ public sealed class DashboardViewModel : ObservableObject
         }
     }
 
-    private void OpenSelectedPdf()
+    private async Task OpenSelectedPdfAsync()
     {
         if (SelectedTransaction is null) return;
-        try { _adobe.OpenPdf(SelectedTransaction.PdfPath); }
+        try
+        {
+            IsBusy = true;
+            var path = await _documents.CreateCurrentCopyAsync(SelectedTransaction.TransactionId, forPrinting: false);
+            _adobe.OpenPdf(path);
+            _status.Message = "Opened current 1297 status. Completed pickups are crossed out; preserved signed PDFs are under Documents.";
+        }
         catch (Exception ex) { ShowError("Open PDF", ex); }
+        finally { IsBusy = false; }
     }
 
     private async Task PrintTwoCopiesAsync()
@@ -382,9 +394,7 @@ public sealed class DashboardViewModel : ObservableObject
             IsBusy = true;
             var selected = SelectedTransaction;
             printedTicketNumber = selected.TicketNumber;
-            printPath = await Task.Run(() => _printJobs.CreateTwoCopyLetterSheet(
-                selected.PdfPath,
-                selected.TicketNumber));
+            printPath = await _documents.CreateCurrentCopyAsync(selected.TransactionId, forPrinting: true);
             var printDialogRequested = _adobe.OpenPdfForPrinting(printPath);
             _status.Message = printDialogRequested
                 ? $"1297 print dialog opened for ticket {selected.TicketNumber}."

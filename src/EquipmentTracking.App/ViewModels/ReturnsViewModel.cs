@@ -13,6 +13,7 @@ public sealed class ReturnsViewModel : ObservableObject
     private readonly DatabaseService _database;
     private readonly ExcelExportService _excel;
     private readonly AdobeService _adobe;
+    private readonly TransactionDocumentService _documents;
     private readonly TransactionWorkflowService _workflow;
     private readonly RecordCodeService _recordCodes;
     private readonly StatusService _status;
@@ -32,11 +33,13 @@ public sealed class ReturnsViewModel : ObservableObject
         TransactionWorkflowService workflow,
         RecordCodeService recordCodes,
         StatusService status,
-        FileLogger logger)
+        FileLogger logger,
+        TransactionDocumentService documents)
     {
         _database = database;
         _excel = excel;
         _adobe = adobe;
+        _documents = documents;
         _workflow = workflow;
         _recordCodes = recordCodes;
         _status = status;
@@ -54,9 +57,9 @@ public sealed class ReturnsViewModel : ObservableObject
         UpdateTransactionDevicesCommand = new AsyncRelayCommand(
             UpdateTransactionDevicesAsync,
             () => !IsBusy && SelectedResult is not null);
-        OpenPdfCommand = new RelayCommand(
-            OpenPdf,
-            () => SelectedResult is not null);
+        OpenPdfCommand = new AsyncRelayCommand(
+            OpenPdfAsync,
+            () => !IsBusy && SelectedResult is not null);
     }
 
     public ObservableCollection<DeviceSearchResult> Results { get; } = [];
@@ -147,6 +150,7 @@ public sealed class ReturnsViewModel : ObservableObject
                 SearchCommand.RaiseCanExecuteChanged();
                 UpdateStatusCommand.RaiseCanExecuteChanged();
                 UpdateTransactionDevicesCommand.RaiseCanExecuteChanged();
+                OpenPdfCommand.RaiseCanExecuteChanged();
             }
         }
     }
@@ -154,7 +158,7 @@ public sealed class ReturnsViewModel : ObservableObject
     public AsyncRelayCommand SearchCommand { get; }
     public AsyncRelayCommand UpdateStatusCommand { get; }
     public AsyncRelayCommand UpdateTransactionDevicesCommand { get; }
-    public RelayCommand OpenPdfCommand { get; }
+    public AsyncRelayCommand OpenPdfCommand { get; }
 
     public async Task SearchAsync()
     {
@@ -435,7 +439,7 @@ public sealed class ReturnsViewModel : ObservableObject
         }
     }
 
-    private void OpenPdf()
+    private async Task OpenPdfAsync()
     {
         if (SelectedResult is null)
         {
@@ -444,12 +448,15 @@ public sealed class ReturnsViewModel : ObservableObject
 
         try
         {
-            _adobe.OpenPdf(SelectedResult.PdfPath);
+            IsBusy = true;
+            var path = await _documents.CreateCurrentCopyAsync(SelectedResult.TransactionId, forPrinting: false);
+            _adobe.OpenPdf(path);
         }
         catch (Exception ex)
         {
             ShowError("Open PDF", ex);
         }
+        finally { IsBusy = false; }
     }
 
     private void ShowError(string title, Exception exception)

@@ -39,7 +39,11 @@
         </DataGrid>
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
             <Button Content="Close" IsCancel="True" Style="{StaticResource TertiaryButtonStyle}" Margin="0,0,10,0" />
-            <Button Content="Open selected document" Command="{Binding OpenSelectedCommand}"
+            <Button Content="Open preserved PDF" Command="{Binding OpenPreservedCommand}"
+                    Style="{StaticResource TertiaryButtonStyle}" Margin="0,0,10,0" />
+            <Button Content="Print readable copies" Command="{Binding PrintSelectedCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0" />
+            <Button Content="View selected" Command="{Binding OpenSelectedCommand}"
                     Style="{StaticResource PrimaryButtonStyle}" />
         </StackPanel>
     </Grid>

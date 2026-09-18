@@ -24,7 +24,8 @@
 - C#/.NET 10 WPF `WinExe`, target `net10.0-windows`, `UseWPF=true`, self-contained `win-x64` release output.
 - SQLite through `Microsoft.Data.Sqlite.Core 10.0.10` and `SQLitePCLRaw.bundle_winsqlite3 2.1.11`, using the Windows-serviced `winsqlite3.dll`.
 - WiX Toolset SDK `6.0.2`; x64, per-machine MSI under Program Files. Installation and MSI update may elevate, but normal application operation remains `asInvoker` for a standard user.
-- Verified release baseline: application `0.9.4-alpha.1`, file/assembly `0.9.4.1` / `0.9.4.0`, MSI product version `0.9.4`, and SQLite schema version `6`. Standalone validation and the canonical unsigned release gate pass; the suite reports 145 tests with 0 failed and 0 skipped. The manifest classifies the generated files as `UNSIGNED SYNTHETIC-DATA PILOT ONLY`. Signed partial-pickup receipts are child documents under one parent 1297; return statuses commit only after new-signature verification, with automatic archive on the final subset.
+- Verified local release baseline: application `0.9.5-alpha.1`, file/assembly `0.9.5.1` / `0.9.5.0`, MSI product version `0.9.5`, and SQLite schema version `6`. Standalone validation and the canonical unsigned release gate pass; the suite reports 149 tests with 0 failed and 0 skipped. The manifest classifies generated files as `UNSIGNED SYNTHETIC-DATA PILOT ONLY`. Current views and prints show cumulative completed-pickup cross-outs; per-receipt views/prints show only that pickup's devices. Derived readable copies never overwrite signed evidence or database paths. Publication is authorized under GitHub tag `v0.9.5-alpha.1`; the build has not been installed.
+- Prior verified/published baseline: application `0.9.4-alpha.1`, file/assembly `0.9.4.1` / `0.9.4.0`, MSI product version `0.9.4`, and SQLite schema version `6`; 145 tests passed with 0 failed and 0 skipped. Signed partial-pickup receipts are child documents under one parent 1297; return statuses commit only after new-signature verification, with automatic archive on the final subset.
 - Prior verified baseline: application `0.9.3-alpha.1`, file/assembly `0.9.3.1` / `0.9.3.0`, MSI product version `0.9.3`, and SQLite schema version `5`. Its preserved canonical gate evidence records 112 tests passed with 0 failed and 0 skipped.
 - Prior verified baseline: application `0.9.2-alpha.1`, file/assembly `0.9.2.1` / `0.9.2.0`, MSI product version `0.9.2`, and SQLite schema version `5`. Its preserved canonical gate evidence records 103 tests passed with 0 failed and 0 skipped.
 - Release publishing is fail-closed on the offline-runtime review: a nonzero verifier exit stops the process before either publish mode, and repository validation enforces that ordering.
@@ -60,6 +61,13 @@ Unsigned pilot output and the Windows `Unknown Publisher` prompt are expected fo
 - Security, backup, restore, migration, signed-PDF preservation, offline-runtime, and installer checks are not weakened or bypassed to obtain a pass.
 - Release work is complete only after the canonical release command passes tests, validation, security/offline checks, both publish modes, and MSI creation, with expected files under `artifacts/release`.
 - If several errors appear, continue through the complete repair and release cycle rather than stopping after the first fix.
+
+## User publishing shorthand
+
+- When the user says "Publish" as a request, treat it as explicit authorization to publish the current working version to `https://github.com/LSmaroff/Equipment-Tracker`: commit and push the complete current source and repository-local AI handoff files, and publish the matching verified MSI, portable EXE, release manifest, and checksums as GitHub release assets.
+- Use this working folder as the source of truth, including current intended changes. Run the canonical release gate before publishing changed application code; never publish stale binaries as the current version. Preserve remote history and prior releases, and use a new version/tag when needed rather than overwrite an existing published release.
+- Continue to exclude credentials, private keys, operational records, private AI session exports, temporary files, and generated build caches from source control. Retain unsigned-pilot labeling and all validation/security requirements. This shorthand does not authorize unrelated deletion, deployment, or installation.
+- Recording this preference is not itself a request to publish; act when the user requests "Publish" or otherwise explicitly asks for publication.
 
 ## Safety and authority boundaries
 

@@ -58,6 +58,7 @@ public sealed class PickupDialogLayoutTests
                         devices, null!)
                 };
                 RenderAndCheck(documents, 980, 550, "pickup-documents");
+                RenderAndCheck(documents, 860, 470, "pickup-documents-minimum");
                 var signature = new CloseoutDialog
                 {
                     DataContext = new CloseoutDialogViewModel(transaction, [], null!, isPartialPickup: true)
@@ -94,6 +95,7 @@ public sealed class PickupDialogLayoutTests
         foreach (var button in buttons.Where(button => button.Visibility == Visibility.Visible && button.ActualHeight > 0))
         {
             var bounds = button.TransformToAncestor(content).TransformBounds(new Rect(button.RenderSize));
+            Assert.True(bounds.Left >= -1, $"{name}: button beyond left edge ({bounds.Left}).");
             Assert.True(bounds.Bottom <= height + 1, $"{name}: button below dialog ({bounds.Bottom}).");
             Assert.True(bounds.Right <= width + 1, $"{name}: button beyond dialog ({bounds.Right}).");
         }

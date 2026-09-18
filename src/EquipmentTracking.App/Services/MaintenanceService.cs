@@ -51,6 +51,7 @@ public sealed class MaintenanceService
         // printing notice; startup removes any sheet abandoned by a crash or a
         // PDF viewer that held the file open past that notice.
         CleanupFiles(_paths.PrintJobsDirectory, "1297-two-copy-*.pdf", DateTime.MaxValue);
+        CleanupFiles(_paths.PrintJobsDirectory, "1297-status-view-*.pdf", DateTime.MaxValue);
         CleanupFiles(_paths.PrintJobsDirectory, ".*.tmp.pdf", cutoff);
 
         CleanupFiles(_paths.BackupDirectory, ".*.tmp", cutoff);

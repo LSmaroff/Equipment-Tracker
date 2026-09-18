@@ -4,19 +4,29 @@ This is the living development handoff for the files currently in this folder. U
 
 ## Current snapshot
 
+The current verified build is **0.9.5-alpha.1 / MSI 0.9.5**, schema 6. The canonical Windows PowerShell release gate passed with 149 tests, zero failures/skips, validation, dependency audits, offline review, both publish modes, and MSI creation. The user authorized publishing the current source, AI handoff files, and matching verified assets on 2026-09-18 under GitHub tag `v0.9.5-alpha.1`. The build has not been installed. Final output is recorded in `artifacts/validation/release-0.9.5-gate.log` and `VALIDATION.md`.
+
+### 0.9.5 presentation fix
+
+- `TransactionDocumentService` derives disposable copies from stored PDF paths plus committed device status. Dashboard and Equipment status current views show all returned devices, as does Dashboard printing; a selected receipt uses only its linked devices. Existing 0.9.4 records need no migration or PDF rewrite.
+- `PrintJobService` shares the existing bold Arial layout between one-copy reference viewing and two-copy Letter printing, and draws explicit returned-device marks after the text on each copy. Signed originals, receipt bytes, database paths, and signature verification workflows stay unchanged. Derived copies preserve signature appearances, not digital-signature validity; unchanged evidence is available through Open preserved PDF.
+- Documents now separates the cumulative current-status row from the last pickup receipt even when their source paths match. View selected, Print readable copies, and Open preserved PDF have distinct purposes. Temporary print cleanup is unchanged; temporary status views are cleared at startup by Maintenance.
+- Four new automated cases cover cumulative/receipt/original/archive output, immutable source hashes, unchanged parent paths, temporary cleanup, invalid mappings, and unrelated documents. The dialog layout test now also exercises its minimum size. Synthetic PDF visual checks cover seven outputs and readable red cross-outs on both printed copies.
+- Publication is authorized for this change as `v0.9.5-alpha.1`. Physical printer and Adobe/CAC acceptance remains outstanding; no installation or operational-data changes are authorized by publishing.
+
 | Item | Current value or evidence |
 |---|---|
-| Verification date | 2026-09-15 (America/Denver); 0.9.4 canonical gate passed |
-| Application version | `0.9.4-alpha.1` |
-| File / assembly version | `0.9.4.1` / `0.9.4.0` |
-| MSI product version | `0.9.4` |
+| Verification date | 2026-09-17 (America/Denver); 0.9.5 canonical gate passed |
+| Application version | `0.9.5-alpha.1` |
+| File / assembly version | `0.9.5.1` / `0.9.5.0` |
+| MSI product version | `0.9.5` |
 | Database schema | `6` |
 | Backup manifest format | `3` |
 | Runtime | Windows x64, self-contained .NET 10 WPF |
 | Development SDK | `10.0.110` selected by `global.json` |
 | WiX SDK | `6.0.2` |
-| Last complete release gate | `0.9.4-alpha.1` passed with `.\scripts\build-release.ps1 -AllowUnsignedPilotBuild` in 75.3 seconds, exit code 0 |
-| Source validation / automated tests | 145 passed, 0 failed, 0 skipped; standalone validation and the full release gate passed. |
+| Last complete release gate | `0.9.5-alpha.1` passed with `.\scripts\build-release.ps1 -AllowUnsignedPilotBuild`, exit code 0 |
+| Source validation / automated tests | 149 passed, 0 failed, 0 skipped; standalone validation and the full release gate passed. |
 | Release classification | `UNSIGNED SYNTHETIC-DATA PILOT ONLY`; `AuthenticodeSigned=false` |
 
 ## Repository and working-tree condition

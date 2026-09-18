@@ -149,7 +149,8 @@ public sealed class DashboardDataIntegrationTests
                 new PrintJobService(paths, logger),
                 recordCodes,
                 new StatusService(),
-                logger);
+                logger,
+                new TransactionDocumentService(database, settings, new PrintJobService(paths, logger)));
 
             viewModel.SearchQuery = recordCodes.BuildPayload(ArchivedTransactionId);
             await viewModel.SearchAsync();

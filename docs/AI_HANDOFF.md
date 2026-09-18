@@ -4,6 +4,8 @@ Start with [../AGENTS.md](../AGENTS.md), then read [PROJECT_STATUS.md](PROJECT_S
 
 ## Published baseline
 
+Current local work advances to **0.9.5-alpha.1 / MSI 0.9.5**, schema 6, with 149 tests and the complete canonical release gate passing. It fixes cumulative pickup cross-outs in current views/prints and readable per-receipt printing through `TransactionDocumentService`; original signed PDFs and database paths are unchanged. See `PROJECT_STATUS.md` and `VALIDATION.md`. The user authorized publication on 2026-09-18 under tag `v0.9.5-alpha.1`. The 0.9.4 published baseline below is retained as historical context. The build has not been installed.
+
 - Repository: https://github.com/LSmaroff/Equipment-Tracker
 - Branch: `main`; release tag: `v0.9.4-alpha.1`.
 - Application `0.9.4-alpha.1`, MSI `0.9.4`, SQLite schema `6`.

@@ -13,9 +13,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\EquipmentTrackingPlatform.ico</ApplicationIcon>
     <Platforms>AnyCPU</Platforms>
-    <Version>0.9.4-alpha.1</Version>
-    <FileVersion>0.9.4.1</FileVersion>
-    <AssemblyVersion>0.9.4.0</AssemblyVersion>
+    <Version>0.9.5-alpha.1</Version>
+    <FileVersion>0.9.5.1</FileVersion>
+    <AssemblyVersion>0.9.5.0</AssemblyVersion>
     <InvariantGlobalization>false</InvariantGlobalization>
     <Deterministic>true</Deterministic>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>

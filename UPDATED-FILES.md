@@ -1,4 +1,10 @@
-# Files changed in 0.9.4-alpha.1
+# Files changed in 0.9.5-alpha.1
+
+- Added `TransactionDocumentService` and its synthetic regression tests for current cumulative views versus per-pickup subsets.
+- Updated shared PDF composition, Dashboard/Equipment status open actions, Documents readable viewing/printing and preserved-original access, temporary-view maintenance, and minimum-size layout coverage.
+- Advanced application/MSI versions to 0.9.5 without a schema change. Updated validation rules, user help, README, changelog, and handoff documentation. No operational PDF or database is rewritten.
+
+## Historical 0.9.4-alpha.1 changes
 
 This release adds exact offline HP device recognition and signed partial-pickup receipts under one parent 1297. The complete canonical gate passed with 145 tests, zero failures, and zero skips. See `CHANGELOG.md`, `VALIDATION.md`, and `docs/PROJECT_STATUS.md` for behavior, evidence, and remaining workstation acceptance checks.
 

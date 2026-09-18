@@ -48,7 +48,16 @@ public sealed class PrintJobService
         _logger = logger;
     }
 
-    public string CreateTwoCopyLetterSheet(string sourcePdfPath, string ticketNumber)
+    public string CreateTwoCopyLetterSheet(string sourcePdfPath, string ticketNumber,
+        IReadOnlyCollection<string>? returnedFields = null) =>
+        CreateReadableCopy(sourcePdfPath, ticketNumber, returnedFields, twoCopies: true);
+
+    public string CreateReadableStatusView(string sourcePdfPath, string ticketNumber,
+        IReadOnlyCollection<string> returnedFields) =>
+        CreateReadableCopy(sourcePdfPath, ticketNumber, returnedFields, twoCopies: false);
+
+    private string CreateReadableCopy(string sourcePdfPath, string ticketNumber,
+        IReadOnlyCollection<string>? returnedFields, bool twoCopies)
     {
         ValidateSourcePath(sourcePdfPath);
         _paths.EnsureDirectories();
@@ -56,7 +65,7 @@ public sealed class PrintJobService
         var safeTicket = SanitizeFileNameSegment(ticketNumber);
         var timestamp = DateTimeOffset.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture);
         var suffix = Guid.NewGuid().ToString("N")[..8];
-        var outputName = $"1297-two-copy-{safeTicket}-{timestamp}-{suffix}.pdf";
+        var outputName = $"1297-{(twoCopies ? "two-copy" : "status-view")}-{safeTicket}-{timestamp}-{suffix}.pdf";
         var outputPath = Path.Combine(_paths.PrintJobsDirectory, outputName);
         var temporaryPath = Path.Combine(
             _paths.PrintJobsDirectory,
@@ -81,13 +90,16 @@ public sealed class PrintJobService
                         "The selected 1297 does not contain readable page content for printing.");
                 }
 
-                var duplicatedContent = BuildTranslatedContent(sourceContentBytes, -verticalShift);
-                page.Contents.AppendContent().CreateStream(duplicatedContent);
+                if (twoCopies)
+                {
+                    var duplicatedContent = BuildTranslatedContent(sourceContentBytes, -verticalShift);
+                    page.Contents.AppendContent().CreateStream(duplicatedContent);
+                }
                 var composition = DuplicateWidgetAppearances(
                     document,
                     page,
                     sourceCrop,
-                    -verticalShift);
+                    -verticalShift, twoCopies);
                 duplicatedAppearanceCount = composition.DuplicatedAppearanceCount;
                 redrawnTextFieldCount = composition.TextFields.Count;
 
@@ -100,9 +112,12 @@ public sealed class PrintJobService
 
                 document.Internals.Catalog.Elements.Remove("/AcroForm");
                 document.Internals.Catalog.Elements.Remove("/Perms");
-                ExpandToLetterPage(page);
-                DrawReadableTextFields(page, composition.TextFields, -verticalShift);
-                DrawCutGuide(page, sourceCrop);
+                if (twoCopies) ExpandToLetterPage(page);
+                DrawReadableTextFields(page, composition.TextFields, -verticalShift, twoCopies);
+                DrawReturnedDeviceMarks(page, composition.TextFields, returnedFields ?? [],
+                    -verticalShift, twoCopies);
+                document.Info.Subject = "Derived reference copy; signed originals are preserved under Documents.";
+                if (twoCopies) DrawCutGuide(page, sourceCrop);
                 document.Save(temporaryPath);
             }
 
@@ -117,16 +132,16 @@ public sealed class PrintJobService
             ValidateGeneratedSheet(
                 temporaryPath,
                 duplicatedAppearanceCount,
-                redrawnTextFieldCount);
+                redrawnTextFieldCount, twoCopies);
             File.Move(temporaryPath, outputPath, overwrite: false);
             _logger.Information(
-                $"Created two-copy Letter print job for ticket {safeTicket}: {Path.GetFileName(outputPath)}");
+                $"Created {(twoCopies ? "two-copy Letter print job" : "readable status view")} for ticket {safeTicket}: {Path.GetFileName(outputPath)}");
             return outputPath;
         }
         catch (Exception ex)
         {
             _logger.Error(
-                $"Could not create two-copy print job for {Path.GetFileName(sourcePdfPath)}.",
+                $"Could not create readable 1297 copy for {Path.GetFileName(sourcePdfPath)}.",
                 ex);
             throw;
         }
@@ -217,7 +232,7 @@ public sealed class PrintJobService
         PdfDocument document,
         PdfPage page,
         PdfRectangle sourceCrop,
-        double translateY)
+        double translateY, bool twoCopies)
     {
         var originalAnnotationCount = page.Annotations.Count;
         var widgetsToRemove = new List<PdfAnnotation>();
@@ -279,7 +294,7 @@ public sealed class PrintJobService
                 appearanceState,
                 sourceFlags,
                 translateY: 0d));
-            replacementStamps.Add(CreateAppearanceStamp(
+            if (twoCopies) replacementStamps.Add(CreateAppearanceStamp(
                 document,
                 sourceRectangle,
                 appearance,
@@ -508,7 +523,7 @@ public sealed class PrintJobService
     private static void DrawReadableTextFields(
         PdfPage page,
         IReadOnlyList<ReadableTextField> textFields,
-        double bottomCopyTranslation)
+        double bottomCopyTranslation, bool twoCopies)
     {
         if (textFields.Count == 0)
         {
@@ -519,7 +534,33 @@ public sealed class PrintJobService
         foreach (var field in textFields)
         {
             DrawReadableTextField(graphics, field, translateY: 0d);
-            DrawReadableTextField(graphics, field, bottomCopyTranslation);
+            if (twoCopies) DrawReadableTextField(graphics, field, bottomCopyTranslation);
+        }
+    }
+
+    private static void DrawReturnedDeviceMarks(PdfPage page,
+        IReadOnlyList<ReadableTextField> textFields, IReadOnlyCollection<string> returnedFields,
+        double bottomCopyTranslation, bool twoCopies)
+    {
+        var names = returnedFields.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var fields = textFields.Where(field => names.Contains(field.FieldName)).ToArray();
+        if (fields.Select(field => field.FieldName).Distinct(StringComparer.OrdinalIgnoreCase).Count() != names.Count)
+            throw new InvalidDataException("A returned device field is missing or empty in the selected PDF. Check the device field mappings before viewing or printing.");
+        page.Elements.SetString("/ETPReturnedFields", string.Join(",", names.Order(StringComparer.OrdinalIgnoreCase)));
+        if (fields.Length == 0) return;
+
+        // Draw last, above the readable text, on both copies. Explicit committed device
+        // identities also support receipts produced before this presentation feature.
+        using var graphics = XGraphics.FromPdfPage(page, XGraphicsPdfPageOptions.Append);
+        var pen = new XPen(XColor.FromArgb(176, 32, 32), 1.8);
+        foreach (var field in fields)
+        {
+            var rectangle = field.Rectangle;
+            var y = LetterHeightPoints - (rectangle.Y1 + rectangle.Y2) / 2d;
+            graphics.DrawLine(pen, rectangle.X1 + 2, y, rectangle.X2 - 2, y);
+            if (twoCopies)
+                graphics.DrawLine(pen, rectangle.X1 + 2, y - bottomCopyTranslation,
+                    rectangle.X2 - 2, y - bottomCopyTranslation);
         }
     }
 
@@ -788,7 +829,7 @@ public sealed class PrintJobService
     private static void ValidateGeneratedSheet(
         string path,
         int expectedStampCount,
-        int expectedRedrawnTextFieldCount)
+        int expectedRedrawnTextFieldCount, bool twoCopies)
     {
         using var document = PdfReader.Open(path, PdfDocumentOpenMode.Modify);
         if (document.PageCount != 1)
@@ -799,9 +840,9 @@ public sealed class PrintJobService
         var page = document.Pages[0];
         var crop = page.EffectiveCropBoxReadOnly;
         if (!NearlyEqual(crop.Width, LetterWidthPoints) ||
-            !NearlyEqual(crop.Height, LetterHeightPoints))
+            !NearlyEqual(crop.Height, twoCopies ? LetterHeightPoints : HalfLetterHeightPoints))
         {
-            throw new InvalidDataException("The generated print job is not US Letter size.");
+            throw new InvalidDataException("The generated 1297 copy does not have the expected page size.");
         }
 
         if (document.Internals.Catalog.Elements["/AcroForm"] is not null)
@@ -850,7 +891,7 @@ public sealed class PrintJobService
             }
         }
 
-        if (topStampCount != expectedStampCount || bottomStampCount != expectedStampCount)
+        if (topStampCount != expectedStampCount || bottomStampCount != (twoCopies ? expectedStampCount : 0))
         {
             throw new InvalidDataException(
                 "The generated print job did not preserve every printable field appearance.");
@@ -906,7 +947,8 @@ public sealed class PrintJobService
         var requiredPrefix = printDirectory + Path.DirectorySeparatorChar;
         var fileName = Path.GetFileName(fullPath);
         if (!fullPath.StartsWith(requiredPrefix, StringComparison.OrdinalIgnoreCase) ||
-            !fileName.StartsWith("1297-two-copy-", StringComparison.OrdinalIgnoreCase) ||
+            !(fileName.StartsWith("1297-two-copy-", StringComparison.OrdinalIgnoreCase) ||
+              fileName.StartsWith("1297-status-view-", StringComparison.OrdinalIgnoreCase)) ||
             !string.Equals(Path.GetExtension(fileName), ".pdf", StringComparison.OrdinalIgnoreCase))
         {
             throw new InvalidOperationException(

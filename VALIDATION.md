@@ -1,4 +1,27 @@
-# Validation report — 0.9.4-alpha.1
+# Validation report — 0.9.5-alpha.1
+
+## Windows release gate verified for 0.9.5 — 2026-09-17
+
+The canonical `.\scripts\build-release.ps1 -AllowUnsignedPilotBuild` command, invoked with the explicit Windows PowerShell executable, passed with exit code 0. All 149 tests passed (0 failed, 0 skipped; 25-second test phase), followed by repository validation, application/installer dependency audits, offline-runtime review, both self-contained publish modes, and WiX MSI creation. Full output is retained in `artifacts/validation/release-0.9.5-gate.log`. Existing unrelated analyzer warnings remain; no checks were weakened or bypassed.
+
+Release identity: application `0.9.5-alpha.1`, file/assembly `0.9.5.1` / `0.9.5.0`, MSI `0.9.5`, schema 6. Manifest timestamp: `2026-09-17T23:58:13.9357139-06:00`; `TestsSkipped=false`, `AuthenticodeSigned=false`, `SelfContained=true`, `OfflineRuntime=true`, `PortableSingleFile=true`, and `UNSIGNED SYNTHETIC-DATA PILOT ONLY`.
+
+Independent rehashes match the manifest and release checksum file:
+
+- `EquipmentTrackingPlatform-0.9.5-alpha.1-win-x64-UNSIGNED-PILOT.exe`: 70,329,404 bytes; SHA-256 `f5fdab6588f9ddaa9ba1869e79af7ede3422188175a0eaa40f69a673c5cee725`.
+- `EquipmentTrackingPlatform-0.9.5-alpha.1-win-x64-UNSIGNED-PILOT.msi`: 58,175,125 bytes; SHA-256 `76d88ae8b243ab8d7c8321e57d2274522d50c3ca2cfc637e58415a3e53e3a381`.
+- `release-manifest.json`: SHA-256 `fdc7faeaeae5b6537802cf9623eada46ac3d858d0837a34d89648cf7c61b9f08`.
+- `SHA256SUMS.txt`: SHA-256 `c6f40a54b2fe1070736bd2083a06ff48f307d020e67dd5267c34912faa8f6764`.
+
+All 425 conventional publish payload checksums and the portable EXE checksum verified. Both dependency audits report no vulnerable packages, and offline review has zero findings. Read-only MSI inspection confirms ProductVersion `0.9.5`, ProductCode `{DA8837BA-AC6A-46A5-A3D3-255E7FED60C0}`, stable UpgradeCode `{C6534286-9C99-45F3-A3AF-F70508F03208}`, and `ALLUSERS=1`. Both release binaries are `NotSigned`, as expected.
+
+Root cause: the current-record actions opened/printed the parent path that partial pickup deliberately leaves unchanged; Documents only opened raw pickup receipts and lacked the readable print action. The fix generates disposable current-status reference copies from committed returned-device identities and per-receipt reference copies from that receipt's exact links. The existing print typography is shared between single-copy viewing and two-copy Letter printing; cross-outs are drawn above the text on each copy. Original intake and signed receipt bytes, database paths, and signature verification are unchanged.
+
+Four new automated cases verify successive pickups, cumulative versus receipt-only versus original output, final archive behavior, immutable source hashes, unchanged persisted paths, temporary cleanup, missing/invalid mappings, and rejection of unrelated documents. The documents layout test also verifies minimum-size action visibility. Seven synthetic PDF outputs under `artifacts/validation/pickup-print-qa` were reopened, rendered with Poppler without warnings, and visually checked: cross-outs are present on the correct devices on both print copies, text remains readable, and signature appearances are preserved. Derived reference PDFs intentionally have no interactive widgets/AcroForm; digitally signed evidence remains available through Open preserved PDF. An empty-overlay rendering issue discovered during QA was corrected before the final release gate.
+
+The user authorized committing and publishing this verified source and its matching assets on 2026-09-18 as `v0.9.5-alpha.1`. The build has not been installed. No operational data was used or modified. Physical printer/Adobe/CAC acceptance and disposable-machine MSI upgrade/rollback still require testing. The generated unsigned installer is restricted to synthetic-data pilot testing unless the responsible organization explicitly approves otherwise.
+
+## Prior verified release — 0.9.4-alpha.1
 
 ## Windows release gate verified for 0.9.4 — 2026-09-15
 

@@ -144,7 +144,7 @@ if ($null -eq $nugetOrgSource -or $nugetOrgSource.GetAttribute('value') -ne 'htt
 
 $projectPath = Join-Path $root 'src\EquipmentTracking.App\EquipmentTracking.App.csproj'
 [xml]$project = Get-Content $projectPath -Raw
-$expectedApplicationVersion = '0.9.4-alpha.1'
+$expectedApplicationVersion = '0.9.5-alpha.1'
 $expectedVersionMatch = [regex]::Match(
     $expectedApplicationVersion,
     '^(?<msi>\d+\.\d+\.\d+)-alpha\.(?<revision>\d+)$')
@@ -570,6 +570,20 @@ if ($returnsViewModelText -match 'ApplyDeviceStrikeThroughs\s*\(' -or $returnsVi
     throw 'Device status pickup actions must use the customer-signed child-document workflow, not mutate the parent PDF directly.'
 }
 $documentsViewText = Get-Content (Join-Path $root 'src\EquipmentTracking.App\Views\TransactionDocumentsDialog.xaml') -Raw
+foreach ($requiredText in @('PrintSelectedCommand', 'OpenPreservedCommand', 'View selected', 'Print readable copies')) {
+    if ($documentsViewText -notmatch [regex]::Escape($requiredText)) {
+        throw "Pickup document presentation is missing '$requiredText'."
+    }
+}
+$documentServiceText = Get-Content (Join-Path $root 'src\EquipmentTracking.App\Services\TransactionDocumentService.cs') -Raw
+foreach ($requiredText in @('CreateCurrentCopyAsync', 'CreatePreservedCopyAsync', 'IsAlreadyReturned', 'receipt.DeviceIds', 'CreateReadableStatusView', 'CreateTwoCopyLetterSheet')) {
+    if ($documentServiceText -notmatch [regex]::Escape($requiredText)) {
+        throw "Current/pickup document presentation is missing '$requiredText'."
+    }
+}
+if (-not (Test-Path (Join-Path $root 'tests\EquipmentTracking.Tests\TransactionDocumentServiceTests.cs'))) {
+    throw 'Current/pickup PDF presentation regression coverage is missing.'
+}
 if ($documentsViewText -notmatch 'Transaction.Customer.DisplayName, Mode=OneWay') {
     throw 'The documents header must use a OneWay binding for the read-only customer display name.'
 }

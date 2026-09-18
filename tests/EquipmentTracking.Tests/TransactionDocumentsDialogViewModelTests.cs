@@ -28,12 +28,14 @@ public sealed class TransactionDocumentsDialogViewModelTests
             new TransactionDeviceStatusItem { DeviceId = 33, DeviceNumber = 3, SerialNumber = "SYN-THREE" }
         ], null!);
         Assert.Same(transaction, viewModel.Transaction);
-        Assert.Equal(3, viewModel.Documents.Count);
+        Assert.Equal(4, viewModel.Documents.Count);
         Assert.Equal("Signed pickup 1", viewModel.Documents[0].Name);
         Assert.Equal("Devices 1 (SYN-ONE), 2 (SYN-TWO)", viewModel.Documents[0].Details);
         Assert.Equal("Synthetic Customer Two", viewModel.Documents[1].Signer);
         Assert.Equal("Original signed intake", viewModel.Documents[2].Name);
-        Assert.Single(viewModel.Documents, item => item.Path == "final-pickup.pdf");
+        Assert.Single(viewModel.Documents, item => item.Path == "final-pickup.pdf" && !item.IsCurrentStatus);
+        Assert.True(viewModel.Documents[3].IsCurrentStatus);
+        Assert.Same(viewModel.Documents[3], viewModel.SelectedDocument);
     }
 
     [Fact]

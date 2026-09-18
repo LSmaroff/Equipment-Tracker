@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.5-alpha.1
+
+### Fixed
+
+- Dashboard and Equipment status PDF opening now derive a readable current-status copy from the stored PDF and committed device status, crossing out all completed pickups. Previously these actions opened the unchanged parent PDF, hiding partial pickups.
+- Dashboard printing includes the same cumulative cross-outs on both readable Letter copies. Archived parents include all returned devices, not just the final receipt's subset.
+- Documents now offers readable viewing and two-copy printing for each signed pickup, using only that receipt's linked devices. A separate current-status row remains available even when its source is the final pickup PDF. Open preserved PDF still opens unchanged signature evidence.
+- Generated reference copies retain signature appearances, but are not digitally signed replacements. All source PDF bytes, database paths, pickup links, and backups remain unchanged; 0.9.4 receipts work without data migration. Temporary views are cleaned at application startup, and print sheets retain prompt/deferred cleanup.
+- MSI version advances to 0.9.5 for upgrades from 0.9.4; schema stays at 6. Automated cumulative/subset/original/archive, failure, source-preservation, cleanup, and dialog-layout regressions accompany the fix.
+
 ## 0.9.4-alpha.1
 
 ### Added

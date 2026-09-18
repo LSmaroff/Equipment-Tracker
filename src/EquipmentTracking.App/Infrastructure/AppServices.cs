@@ -41,6 +41,7 @@ public sealed class AppServices : IDisposable
         Excel = new ExcelExportService(Database, Settings, Logger);
         Adobe = new AdobeService(Settings, Logger);
         PrintJobs = new PrintJobService(Paths, Logger);
+        TransactionDocuments = new TransactionDocumentService(Database, Settings, PrintJobs);
         Workflow = new TransactionWorkflowService(
             Paths,
             Settings,
@@ -92,6 +93,7 @@ public sealed class AppServices : IDisposable
     public ExcelExportService Excel { get; }
     public AdobeService Adobe { get; }
     public PrintJobService PrintJobs { get; }
+    public TransactionDocumentService TransactionDocuments { get; }
     public TransactionWorkflowService Workflow { get; }
     public PreflightService Preflight { get; }
     public SupportPackageService SupportPackages { get; }
@@ -126,7 +128,8 @@ public sealed class AppServices : IDisposable
             PrintJobs,
             RecordCodes,
             Status,
-            Logger);
+            Logger,
+            TransactionDocuments);
         var intake = new IntakeViewModel(
             Workflow,
             CacCertificates,
@@ -145,7 +148,8 @@ public sealed class AppServices : IDisposable
             Workflow,
             RecordCodes,
             Status,
-            Logger);
+            Logger,
+            TransactionDocuments);
         var settings = new SettingsViewModel(
             Settings,
             PdfForms,
