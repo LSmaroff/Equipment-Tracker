@@ -1,4 +1,24 @@
-# Validation report — 0.9.5-alpha.1
+# Validation report — 0.9.6-alpha.1
+
+## Windows release gate verified for 0.9.6 — 2026-09-25
+
+The canonical `.\scripts\build-release.ps1 -AllowUnsignedPilotBuild` command, run through Windows PowerShell, passed with exit code 0: 154 tests passed, 0 failed, 0 skipped (33-second test phase); repository validation, both dependency audits, offline-runtime review, both self-contained publish modes, and WiX MSI creation passed. Full output: `artifacts/validation/release-0.9.6-gate.log`. Existing unrelated analyzer warnings remain; checks were not weakened or bypassed.
+
+Application `0.9.6-alpha.1`, file/assembly `0.9.6.1` / `0.9.6.0`, MSI `0.9.6`, schema 6. Manifest created `2026-09-25T11:39:07.5697313-06:00`, with tests enabled, offline/self-contained runtime, portable single-file output, and `UNSIGNED SYNTHETIC-DATA PILOT ONLY` classification.
+
+Independent release hashes and sizes match the manifest and checksum file:
+
+- EXE: 70,330,747 bytes; SHA-256 `7d01d2c3b990f5e9c689eb4ecdbe129352c4ca4ec198d481398f60d5240a7a6d`.
+- MSI: 58,183,317 bytes; SHA-256 `0e252d1c56a624f175e8e4c4d85af21aeeaca803b08541085c4dd1a5424de9b6`.
+- Manifest: SHA-256 `0ea7714d8c0d5709df76378f37d4e48e2f8260ea248562223f0917292c9b86c2`.
+
+All 425 conventional publish payload checksums and the portable payload checksum verified. Read-only MSI inspection confirms ProductVersion `0.9.6`, ProductCode `{3C0AD750-C619-409F-9120-A2F96EA54BB5}`, stable UpgradeCode `{C6534286-9C99-45F3-A3AF-F70508F03208}`, and per-machine `ALLUSERS=1`.
+
+Intake now offers printing only after successful finalization, targeting the saved transaction ID through the existing current-document print service. Starting/resetting intake clears the shortcut; printing does not re-finalize, change signed files, or roll back the record. Five new completion-state/command tests verify initial gating, correct record selection, reset/new-intake replacement, repeat availability, empty-ID rejection, and overlapping-click protection. The actual XAML completion panel was rendered offscreen with synthetic data; ticket text, command binding, visibility, and button bounds were checked. Screenshot: `artifacts/validation/intake-print-qa/intake-completed-print.png`. Existing readable PDF composition, source preservation, and cleanup tests passed unchanged.
+
+The user authorized publishing source, AI handoff files, and matching assets as `v0.9.6-alpha.1`. No software installation or operational-data modification was performed. Physical printer/Adobe/CAC and disposable-machine MSI upgrade acceptance remain outstanding. This unsigned release does not establish operational authorization.
+
+## Prior verified release — 0.9.5-alpha.1
 
 ## Windows release gate verified for 0.9.5 — 2026-09-17
 

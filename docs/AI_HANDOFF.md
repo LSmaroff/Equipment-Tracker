@@ -4,7 +4,7 @@ Start with [../AGENTS.md](../AGENTS.md), then read [PROJECT_STATUS.md](PROJECT_S
 
 ## Published baseline
 
-Current local work advances to **0.9.5-alpha.1 / MSI 0.9.5**, schema 6, with 149 tests and the complete canonical release gate passing. It fixes cumulative pickup cross-outs in current views/prints and readable per-receipt printing through `TransactionDocumentService`; original signed PDFs and database paths are unchanged. See `PROJECT_STATUS.md` and `VALIDATION.md`. The user authorized publication on 2026-09-18 under tag `v0.9.5-alpha.1`. The 0.9.4 published baseline below is retained as historical context. The build has not been installed.
+Current verified release: **0.9.6-alpha.1 / MSI 0.9.6**, schema 6, with all 154 tests and the full canonical release gate passing. Intake now offers Print two 1297 copies after successful finalization, using the existing readable printing and signed-original safeguards. New/reset intake clears the completed print target; errors do not undo finalization. Publication is authorized on 2026-09-25 as `v0.9.6-alpha.1`. See `PROJECT_STATUS.md` and `VALIDATION.md`. The 0.9.4 baseline below is historical context. No installation was performed.
 
 - Repository: https://github.com/LSmaroff/Equipment-Tracker
 - Branch: `main`; release tag: `v0.9.4-alpha.1`.

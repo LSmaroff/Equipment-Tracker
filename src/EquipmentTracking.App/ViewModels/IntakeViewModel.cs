@@ -20,6 +20,8 @@ public sealed class IntakeViewModel : ObservableObject
     private readonly ExcelExportService _excel;
     private readonly StatusService _status;
     private readonly FileLogger _logger;
+    private readonly TransactionDocumentService _documents;
+    private readonly PrintJobService _printJobs;
 
     private CacCertificateCandidate? _selectedCacCertificate;
     private DeviceRecord? _selectedDevice;
@@ -47,7 +49,9 @@ public sealed class IntakeViewModel : ObservableObject
         DatabaseService database,
         ExcelExportService excel,
         StatusService status,
-        FileLogger logger)
+        FileLogger logger,
+        TransactionDocumentService documents,
+        PrintJobService printJobs)
     {
         _workflow = workflow;
         _cacCertificates = cacCertificates;
@@ -59,6 +63,9 @@ public sealed class IntakeViewModel : ObservableObject
         _excel = excel;
         _status = status;
         _logger = logger;
+        _documents = documents;
+        _printJobs = printJobs;
+        Completion = new IntakeCompletionViewModel(() => IsBusy, PrintCompletedIntakeAsync);
 
         RefreshCacCommand = new AsyncRelayCommand(
             RefreshCacAsync,
@@ -282,6 +289,7 @@ public sealed class IntakeViewModel : ObservableObject
                 RemoveDeviceCommand.RaiseCanExecuteChanged();
                 OpenCurrentPdfCommand.RaiseCanExecuteChanged();
                 ResetCommand.RaiseCanExecuteChanged();
+                Completion.PrintCommand.RaiseCanExecuteChanged();
             }
         }
     }
@@ -294,6 +302,7 @@ public sealed class IntakeViewModel : ObservableObject
     public AsyncRelayCommand FinalizeCommand { get; }
     public RelayCommand OpenCurrentPdfCommand { get; }
     public RelayCommand ResetCommand { get; }
+    public IntakeCompletionViewModel Completion { get; }
 
     public async Task<bool> ProcessScanAsync(DeviceEntryRow? entry)
     {
@@ -521,6 +530,7 @@ public sealed class IntakeViewModel : ObservableObject
         try
         {
             IsBusy = true;
+            Completion.Clear();
             ReloadOrganizations();
             await RefreshTechnicianSuggestionsAsync();
             _workingTransaction = _workflow.StartTransaction();
@@ -645,12 +655,16 @@ public sealed class IntakeViewModel : ObservableObject
                 $"Transaction completed.\n\nPDF:\n{result.FinalPdfPath}\n\n" +
                 (string.IsNullOrWhiteSpace(result.ExcelExportPath)
                     ? "The database was saved. Excel export needs to be retried."
-                    : $"Excel:\n{result.ExcelExportPath}"),
+                    : $"Excel:\n{result.ExcelExportPath}") +
+                "\n\nUse Print two 1297 copies in Intake to print this completed record without opening Dashboard.",
                 "Intake completed",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
 
             Reset();
+            Completion.RecordCompletion(result.Transaction.Id, result.Transaction.TicketNumber);
+            WorkflowStatus = "Intake completed. Print two 1297 copies below, or create a new intake.";
+            _status.Message = WorkflowStatus;
             await RefreshTechnicianSuggestionsAsync();
         }
         catch (SignatureValidationException ex)
@@ -752,8 +766,48 @@ public sealed class IntakeViewModel : ObservableObject
         }
     }
 
+    private async Task PrintCompletedIntakeAsync(string transactionId)
+    {
+        string? printPath = null;
+        try
+        {
+            IsBusy = true;
+            printPath = await _documents.CreateCurrentCopyAsync(transactionId, forPrinting: true);
+            var printDialogRequested = _adobe.OpenPdfForPrinting(printPath);
+            _status.Message = "Completed intake print sheet opened.";
+            MessageBox.Show(
+                (printDialogRequested ? "The print dialog is open. " : "Press Ctrl+P in the PDF viewer. ") +
+                "Use US Letter, portrait, one-sided printing, and printer copy count 1 for two readable 1297 copies. " +
+                "Keep this message open until printing finishes. Closing it removes the temporary print sheet. " +
+                "The saved intake and signed original are unchanged.",
+                "Print completed intake", MessageBoxButton.OK, MessageBoxImage.Information);
+            WorkflowStatus = "The intake is saved. You can print again or create a new intake.";
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("Print completed intake", ex);
+            WorkflowStatus = "The intake is saved, but printing could not be opened. You can retry Print two 1297 copies.";
+            MessageBox.Show(WorkflowStatus + "\n\n" + ex.Message,
+                "Print completed intake", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            try
+            {
+                if (printPath is not null) await _printJobs.DeleteTemporaryPrintJobAsync(printPath);
+            }
+            catch (Exception ex)
+            {
+                _logger.Warning($"Intake print-copy cleanup failed: {ex.GetType().Name}.");
+            }
+            IsBusy = false;
+            _status.Message = WorkflowStatus;
+        }
+    }
+
     private void Reset()
     {
+        Completion.Clear();
         _workingTransaction = null;
         _isPdfPrepared = false;
         OnPropertyChanged(nameof(HasActiveTransaction));

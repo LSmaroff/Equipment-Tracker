@@ -4,7 +4,13 @@ This is the living development handoff for the files currently in this folder. U
 
 ## Current snapshot
 
-The current verified build is **0.9.5-alpha.1 / MSI 0.9.5**, schema 6. The canonical Windows PowerShell release gate passed with 149 tests, zero failures/skips, validation, dependency audits, offline review, both publish modes, and MSI creation. The user authorized publishing the current source, AI handoff files, and matching verified assets on 2026-09-18 under GitHub tag `v0.9.5-alpha.1`. The build has not been installed. Final output is recorded in `artifacts/validation/release-0.9.5-gate.log` and `VALIDATION.md`.
+The current verified build is **0.9.6-alpha.1 / MSI 0.9.6**, schema 6. The canonical Windows PowerShell release gate passed 154 tests (0 failed/skipped), validation, dependency audits, offline review, both publish modes, and MSI creation. The user authorized publication of source, AI handoff documents, and verified release assets as `v0.9.6-alpha.1` on 2026-09-25. No installation was performed. Evidence: `artifacts/validation/release-0.9.6-gate.log` and `VALIDATION.md`.
+
+### 0.9.6 intake printing
+
+- Intake now shows the successfully finalized ticket and **Print two 1297 copies** after the completion message. No Dashboard navigation is required. Reprinting does not re-finalize or modify the saved record.
+- `IntakeCompletionViewModel` tracks the finalized transaction ID only; new/reset intake clears it. Busy and command reentrancy guards prevent overlapping jobs. The Intake presenter delegates to `TransactionDocumentService` and existing readable printing, then uses the existing prompt/deferred cleanup. Print failures leave the completion available for retry.
+- Five new command-state regressions cover gating, correct record selection, reset/new-intake behavior, reprint availability, and overlapping clicks. The offscreen layout test loads the actual XAML completion panel and verifies ticket text, command binding, visibility, and action bounds. Synthetic print/service regression tests also pass. No PDF rendering or signature-verification implementation changed.
 
 ### 0.9.5 presentation fix
 
@@ -16,17 +22,17 @@ The current verified build is **0.9.5-alpha.1 / MSI 0.9.5**, schema 6. The canon
 
 | Item | Current value or evidence |
 |---|---|
-| Verification date | 2026-09-17 (America/Denver); 0.9.5 canonical gate passed |
-| Application version | `0.9.5-alpha.1` |
-| File / assembly version | `0.9.5.1` / `0.9.5.0` |
-| MSI product version | `0.9.5` |
+| Verification date | 2026-09-25 (America/Denver); 0.9.6 canonical gate passed |
+| Application version | `0.9.6-alpha.1` |
+| File / assembly version | `0.9.6.1` / `0.9.6.0` |
+| MSI product version | `0.9.6` |
 | Database schema | `6` |
 | Backup manifest format | `3` |
 | Runtime | Windows x64, self-contained .NET 10 WPF |
 | Development SDK | `10.0.110` selected by `global.json` |
 | WiX SDK | `6.0.2` |
-| Last complete release gate | `0.9.5-alpha.1` passed with `.\scripts\build-release.ps1 -AllowUnsignedPilotBuild`, exit code 0 |
-| Source validation / automated tests | 149 passed, 0 failed, 0 skipped; standalone validation and the full release gate passed. |
+| Last complete release gate | `0.9.6-alpha.1` passed with `.\scripts\build-release.ps1 -AllowUnsignedPilotBuild`, exit code 0 |
+| Source validation / automated tests | 154 passed, 0 failed, 0 skipped; standalone validation and the full release gate passed. |
 | Release classification | `UNSIGNED SYNTHETIC-DATA PILOT ONLY`; `AuthenticodeSigned=false` |
 
 ## Repository and working-tree condition

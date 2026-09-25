@@ -144,7 +144,7 @@ if ($null -eq $nugetOrgSource -or $nugetOrgSource.GetAttribute('value') -ne 'htt
 
 $projectPath = Join-Path $root 'src\EquipmentTracking.App\EquipmentTracking.App.csproj'
 [xml]$project = Get-Content $projectPath -Raw
-$expectedApplicationVersion = '0.9.5-alpha.1'
+$expectedApplicationVersion = '0.9.6-alpha.1'
 $expectedVersionMatch = [regex]::Match(
     $expectedApplicationVersion,
     '^(?<msi>\d+\.\d+\.\d+)-alpha\.(?<revision>\d+)$')
@@ -498,6 +498,20 @@ foreach ($requiredText in @('TryResolveExactDevice', 'GetDeviceIdentityHistoryAs
 }
 
 $intakeViewModelText = Get-Content (Join-Path $root 'src\EquipmentTracking.App\ViewModels\IntakeViewModel.cs') -Raw
+foreach ($requiredText in @('Completion.RecordCompletion(result.Transaction.Id', 'Completion.Clear()', 'PrintCompletedIntakeAsync', 'CreateCurrentCopyAsync(transactionId, forPrinting: true)', 'DeleteTemporaryPrintJobAsync')) {
+    if ($intakeViewModelText -notmatch [regex]::Escape($requiredText)) {
+        throw "Completed-intake printing is missing '$requiredText'."
+    }
+}
+$intakePrintView = Get-Content (Join-Path $root 'src\EquipmentTracking.App\Views\IntakeView.xaml') -Raw
+foreach ($requiredText in @('HasCompletedIntake', 'Print two 1297 copies', 'Binding PrintCommand')) {
+    if ($intakePrintView -notmatch [regex]::Escape($requiredText)) {
+        throw "Completed-intake print action is missing '$requiredText'."
+    }
+}
+if (-not (Test-Path (Join-Path $root 'tests\EquipmentTracking.Tests\IntakeCompletionViewModelTests.cs'))) {
+    throw 'Completed-intake print regression coverage is missing.'
+}
 foreach ($requiredText in @('_deviceRecognition.RecognizeAsync', 'string.IsNullOrWhiteSpace(entry.PartNumber)', 'string.IsNullOrWhiteSpace(entry.ModelName)')) {
     if ($intakeViewModelText -notmatch [regex]::Escape($requiredText)) {
         throw "New Intake recognition wiring/edit preservation is missing '$requiredText'."

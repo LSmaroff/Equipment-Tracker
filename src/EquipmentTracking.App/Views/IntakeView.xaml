@@ -629,6 +629,15 @@
                                 <TextBlock Text="{Binding WorkflowStatus}"
                                            Style="{StaticResource SupportingTextStyle}"
                                            Margin="0,4,0,0" />
+                                <StackPanel DataContext="{Binding Completion}" Margin="0,16,0,0"
+                                            Visibility="{Binding HasCompletedIntake, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock Text="{Binding Summary}" Style="{StaticResource CardTitleStyle}" TextWrapping="Wrap" />
+                                    <TextBlock Text="Print two readable copies on one Letter sheet. Your saved signed PDF stays unchanged."
+                                               Style="{StaticResource SupportingTextStyle}" Margin="0,6,0,12" />
+                                    <Button Content="Print two 1297 copies" Command="{Binding PrintCommand}"
+                                            Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Left"
+                                            automation:AutomationProperties.Name="Print two copies of the completed intake 1297" />
+                                </StackPanel>
                             </StackPanel>
                         </Grid>
                     </Border>

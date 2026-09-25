@@ -1,4 +1,10 @@
-# Files changed in 0.9.5-alpha.1
+# Files changed in 0.9.6-alpha.1
+
+- Added `IntakeCompletionViewModel` and completion-command tests. Intake records the successfully finalized transaction ID and offers a readable two-copy print action after clearing the completed input form.
+- Wired existing transaction-document and print-job services into Intake, retaining signature preservation and temporary-copy cleanup. Starting/resetting an intake clears the old print target; busy/reentrancy guards protect printing.
+- Added a rendered check of the actual completion panel and its bindings, plus repository validation rules and user help. Advanced application/MSI identity to 0.9.6; schema remains 6.
+
+## Historical 0.9.5-alpha.1 changes
 
 - Added `TransactionDocumentService` and its synthetic regression tests for current cumulative views versus per-pickup subsets.
 - Updated shared PDF composition, Dashboard/Equipment status open actions, Documents readable viewing/printing and preserved-original access, temporary-view maintenance, and minimum-size layout coverage.

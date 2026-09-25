@@ -140,7 +140,9 @@ public sealed class AppServices : IDisposable
             Database,
             Excel,
             Status,
-            Logger);
+            Logger,
+            TransactionDocuments,
+            PrintJobs);
         var returns = new ReturnsViewModel(
             Database,
             Excel,

@@ -59,6 +59,25 @@ public sealed class PickupDialogLayoutTests
                 };
                 RenderAndCheck(documents, 980, 550, "pickup-documents");
                 RenderAndCheck(documents, 860, 470, "pickup-documents-minimum");
+                // Render the actual completed-intake panel without constructing application services.
+                var intakeXaml = System.Xml.Linq.XDocument.Load(Path.Combine(root, "src", "EquipmentTracking.App", "Views", "IntakeView.xaml"));
+                var completionPanel = intakeXaml.Descendants().Single(element =>
+                    (string?)element.Attribute("DataContext") == "{Binding Completion}");
+                var panel = Assert.IsAssignableFrom<FrameworkElement>(XamlReader.Parse(completionPanel.ToString()));
+                var completion = new IntakeCompletionViewModel(() => false, _ => Task.CompletedTask);
+                completion.RecordCompletion("SYNTHETIC-SAVED", "SYNTHETIC-INTAKE-1297");
+                var intakeContainer = new Grid();
+                intakeContainer.Children.Add(panel);
+                var intakePrint = new Window { Content = intakeContainer, DataContext = new { Completion = completion } };
+                RenderAndCheck(intakePrint, 620, 180, "intake-completed-print");
+                Assert.Contains(Descendants<Button>(panel), button => button.Content?.ToString() == "Print two 1297 copies" &&
+                    button.IsEnabled && ReferenceEquals(button.Command, completion.PrintCommand));
+                Assert.Contains(Descendants<TextBlock>(panel), text => text.Text.Contains("SYNTHETIC-INTAKE-1297", StringComparison.Ordinal));
+                Assert.Equal(Visibility.Visible, panel.Visibility);
+                completion.Clear();
+                intakeContainer.UpdateLayout();
+                Assert.Equal(Visibility.Collapsed, panel.Visibility);
+                intakePrint.Close();
                 var signature = new CloseoutDialog
                 {
                     DataContext = new CloseoutDialogViewModel(transaction, [], null!, isPartialPickup: true)

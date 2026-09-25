@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.6-alpha.1
+
+- Added **Print two 1297 copies** directly in Intake after successful finalization. The completed ticket is displayed beside the action; no Dashboard navigation is needed.
+- Uses the existing readable two-copy Letter layout and print dialog, with immutable signed originals and prompt/deferred temporary-file cleanup. Reprinting is supported without re-finalizing; a print error does not undo the intake.
+- Starting or resetting an intake clears the previous completed print target. Unsigned/prepared forms cannot enable this action, and busy/double-click guards prevent overlapping print jobs.
+- MSI version advances to 0.9.6 for upgrades; schema remains 6. Added completion-state/command regressions and a rendered check of the actual Intake completion panel.
+
 ## 0.9.5-alpha.1
 
 ### Fixed

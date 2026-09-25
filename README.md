@@ -1,10 +1,12 @@
-# Equipment Tracking Platform — 0.9.5-alpha.1
+# Equipment Tracking Platform — 0.9.6-alpha.1
 
 A Windows desktop application for creating, signing, searching, updating, recovering, printing, closing, and archiving DD Form 1297 equipment records.
 
 The application targets C# / .NET 10 / WPF, stores operational data in local SQLite, and has no runtime Internet dependency, telemetry, or automatic network updater. This remains a pilot build; it is not an AFNET approval, Authority to Operate, or records-policy determination.
 
 ## Field deployment artifacts
+
+After an intake is finalized, **Print two 1297 copies** is available directly in Intake beside the completed ticket. It uses the same readable Letter sheet as Dashboard printing. Reprint as needed without finalizing again; starting or resetting an intake clears this shortcut. Keep the printing notice open until printing finishes. Saved signed PDFs are never modified by printing.
 
 `scripts\build-release.ps1` creates two offline, self-contained Windows x64 choices:
 
@@ -13,7 +15,7 @@ The application targets C# / .NET 10 / WPF, stores operational data in local SQL
 
 The two packages use the same per-user data locations. Updating or uninstalling the application does not remove the SQLite database, settings, completed PDFs, or backups. Settings now provides **Install update package…** for a newer offline MSI. It checks the product and stable UpgradeCode, refuses same/older versions, verifies the MSI hash and size against a companion `release-manifest.json` when available, creates a verified pre-update database/settings backup, starts Windows Installer with administrator approval, and closes the app. It never checks the Internet. An older installed build without this command uses the normal authorized MSI path once to reach 0.9. Every MSI release must increment one of the first three numeric version fields; for example, move from `0.9.3-alpha.1` to `0.9.4-alpha.1`, not only to `0.9.3-alpha.2`.
 
-The current verified local build is `0.9.5-alpha.1` with MSI product version `0.9.5` and SQLite schema 6. It fixes cumulative pickup cross-outs when viewing/printing a 1297 and adds readable per-receipt printing while preserving signed PDFs. The canonical release gate passed all 149 tests (0 failed, 0 skipped), validation, dependency audits, offline review, both publish modes, and MSI creation. Versioned unsigned-pilot EXE/MSI files and the manifest/checksums are under `artifacts/release`; see `VALIDATION.md` for verification evidence. Publication is authorized under GitHub tag `v0.9.5-alpha.1`. The build has not been installed; physical printer, scanner, and Adobe/CAC acceptance remains outstanding.
+The current verified release is `0.9.6-alpha.1`, MSI `0.9.6`, SQLite schema 6. It adds direct two-copy printing after successful Intake finalization, preserving the readable print layout, partial-pickup cross-outs, and signed PDFs. The canonical release gate passed all 154 tests (0 failed/skipped), validation, dependency audits, offline review, both publish modes, and MSI creation. Assets are under `artifacts/release`; see `VALIDATION.md`. Publication is authorized as `v0.9.6-alpha.1`. The build has not been installed; physical printer, scanner, and Adobe/CAC acceptance remains outstanding.
 
 The prior verified release was `0.9.3-alpha.1`. Its canonical gate passed in 54.9 seconds with 112 tests, 0 failed, and 0 skipped, plus validation, dependency audits, fail-closed offline review, both publish modes, and MSI creation. Its historical hashes and sizes remain recorded in `VALIDATION.md`. All unsigned-pilot artifacts remain restricted to synthetic-data testing unless the responsible organization explicitly approves a different use.
 

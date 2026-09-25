@@ -137,7 +137,7 @@ public sealed class MainWindowViewModel : ObservableObject
                 .InformationalVersion;
 
             return string.IsNullOrWhiteSpace(informationalVersion)
-                ? assembly.GetName().Version?.ToString(3) ?? "0.9.5-alpha.1"
+                ? assembly.GetName().Version?.ToString(3) ?? "0.9.6-alpha.1"
                 : informationalVersion.Split('+')[0];
         }
     }
